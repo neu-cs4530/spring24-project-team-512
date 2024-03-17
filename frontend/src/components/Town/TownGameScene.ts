@@ -43,6 +43,8 @@ export default class TownGameScene extends Phaser.Scene {
 
   private _cursorKeys?: Phaser.Types.Input.Keyboard.CursorKeys;
 
+  private _rt?: Phaser.GameObjects.RenderTexture;
+
   /*
    * A "captured" key doesn't send events to the browser - they are trapped by Phaser
    * When pausing the game, we uncapture all keys, and when resuming, we re-capture them.
@@ -128,6 +130,7 @@ export default class TownGameScene extends Phaser.Scene {
       this._resourcePathPrefix + '/assets/tilesets/16_Grocery_store_32x32.png',
     );
     this.load.tilemapTiledJSON('map', this._resourcePathPrefix + '/assets/tilemaps/indoors.json');
+
     this.load.atlas(
       'atlas',
       this._resourcePathPrefix + '/assets/atlas/atlas.png',
@@ -287,6 +290,44 @@ export default class TownGameScene extends Phaser.Scene {
         if (player.gameObjects?.label && player.gameObjects?.sprite.body) {
           player.gameObjects.label.setX(player.gameObjects.sprite.body.x);
           player.gameObjects.label.setY(player.gameObjects.sprite.body.y - 20);
+
+          //  Draw the spotlight on the player
+          const cam = this.cameras.main;
+
+          //  Clear the RenderTexture
+          const room2 = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Room2',
+          ) as Phaser.Types.Tilemaps.TiledObject;
+          if (
+            player.location.x < room2.x + room2.width / 2 &&
+            // player.location.x > room2.x - room2.width / 2 &&
+            // player.location.y < room2.y + room2.height / 2 //&&
+            player.location.y > room2.y - room2.height / 2
+          ) {
+            const maskX = player.location.x; // X coordinate of the mask
+            const maskY = player.location.y; // Y coordinate of the mask
+            const maskWidth = 5; // Width of the mask
+            const maskHeight = 5; // Height of the mask
+
+            // Create the mask shape
+            const maskGraphics = this.add.graphics();
+            maskGraphics.fillStyle(0xffff00, 0.75); // yellow color, 75% transparency
+            maskGraphics.fillRect(maskX, maskY, maskWidth, maskHeight);
+            this._rt?.clear();
+
+            //  Fill it in black
+            this._rt?.fill(0x000000);
+
+            //  Erase the 'mask' texture from it based on the player position
+            //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
+            //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
+            this._rt?.erase(
+              'mask',
+              player.gameObjects.sprite.body.x - 107 - cam.scrollX,
+              player.gameObjects.sprite.body.x - 107 - cam.scrollY,
+            );
+          }
         }
       }
     }
@@ -493,6 +534,10 @@ export default class TownGameScene extends Phaser.Scene {
     camera.startFollow(this.coveyTownController.ourPlayer.gameObjects.sprite);
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
+    this._rt = this.add.renderTexture(0, 0, this.scale.width, this.scale.height);
+    //  Make sure it doesn't scroll with the camera
+    this._rt.setOrigin(0, 0);
+    this._rt.setScrollFactor(0, 0);
     // Help text that has a "fixed" position on the screen
     this.add
       .text(16, 16, `Arrow keys to move`, {
