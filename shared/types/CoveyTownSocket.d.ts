@@ -120,6 +120,7 @@ export interface TicTacToeGameState extends WinnableGameState {
   o?: PlayerID;
 }
 
+
 /**
  * Type for the state of a ConnectFour game.
  * The state of the game is represented as a list of moves, and the playerIDs of the players (red and yellow)
@@ -163,7 +164,7 @@ export type ConnectFourColor = 'Red' | 'Yellow';
 
 export type InteractableID = string;
 export type GameInstanceID = string;
-
+export type RoomInstanceID = string;
 /**
  * Type for the result of a game
  */
@@ -216,7 +217,50 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand;
+/**
+ * Necessary types for escape room
+ */
+
+/**
+ * State for an escape room
+ */
+
+
+export interface RoomResult {
+  roomID: RoomInstanceID;
+  time: number;
+}
+
+
+export type RoomStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'COMPLETED';
+/**
+ * Base type for the state of a game
+ */
+export interface EscapeRoomState {
+  status: RoomStatus;
+  player?: PlayerID;
+  playerReady?: boolean;
+} 
+
+export interface EscapeRoomArea<T extends EscapeRoomState> extends Interactable {
+  room: RoomInstance<T> | undefined;
+  history: RoomResult[];
+}
+
+/**
+ * Base type for an *instance* of an escape room. An instance of an escape room
+ * consists of the present state of the room (which can change over time),
+ * the player in the room, and the result of the room (completed the escape room or quit)
+ * @see GameState
+ */
+export interface RoomInstance<T extends EscapeRoomState> {
+  state: T;
+  id: RoomInstanceID;
+  player: PlayerID;
+  result?: RoomResult;
+}
+
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand | JoinRoomCommand | LeaveRoomCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -237,11 +281,22 @@ export interface GameMoveCommand<MoveType> {
   gameID: GameInstanceID;
   move: MoveType;
 }
+
+export interface JoinRoomCommand {
+  type: 'JoinRoom';
+}
+export interface LeaveRoomCommand {
+  type: 'LeaveRoom';
+  roomID: RoomInstanceID;
+}
+
 export type InteractableCommandReturnType<CommandType extends InteractableCommand> = 
   CommandType extends JoinGameCommand ? { gameID: string}:
   CommandType extends ViewingAreaUpdateCommand ? undefined :
   CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
   CommandType extends LeaveGameCommand ? undefined :
+  CommandType extends JoinRoomCommand ? { roomID: string} :
+  CommandType extends LeaveRoomCommand ? undefined :
   never;
 
 export type InteractableCommandResponse<MessageType> = {
