@@ -129,6 +129,8 @@ export default class TownGameScene extends Phaser.Scene {
       '16_Grocery_store_32x32',
       this._resourcePathPrefix + '/assets/tilesets/16_Grocery_store_32x32.png',
     );
+    this.load.image('mask', this._resourcePathPrefix + 'mask1.png');
+
     this.load.tilemapTiledJSON('map', this._resourcePathPrefix + '/assets/tilemaps/indoors.json');
 
     this.load.atlas(
@@ -294,7 +296,6 @@ export default class TownGameScene extends Phaser.Scene {
           //  Draw the spotlight on the player
           const cam = this.cameras.main;
 
-          //  Clear the RenderTexture
           const room2 = this.map.findObject(
             'Objects',
             obj => obj.name === 'Room2',
@@ -305,15 +306,10 @@ export default class TownGameScene extends Phaser.Scene {
             // player.location.y < room2.y + room2.height / 2 //&&
             player.location.y > room2.y - room2.height / 2
           ) {
-            const maskX = player.location.x; // X coordinate of the mask
-            const maskY = player.location.y; // Y coordinate of the mask
-            const maskWidth = 5; // Width of the mask
-            const maskHeight = 5; // Height of the mask
+            // this.map.removeTileAt(player.location.x, player.location.y, true, true, 'Above Player');
 
-            // Create the mask shape
-            const maskGraphics = this.add.graphics();
-            maskGraphics.fillStyle(0xffff00, 0.75); // yellow color, 75% transparency
-            maskGraphics.fillRect(maskX, maskY, maskWidth, maskHeight);
+            // this._collidingLayers[2].tileAt(player.location.x, player.location.y, null);
+            //  Clear the RenderTexture
             this._rt?.clear();
 
             //  Fill it in black
@@ -324,8 +320,8 @@ export default class TownGameScene extends Phaser.Scene {
             //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
             this._rt?.erase(
               'mask',
-              player.gameObjects.sprite.body.x - 107 - cam.scrollX,
-              player.gameObjects.sprite.body.x - 107 - cam.scrollY,
+              player.location.x - 60 - cam.scrollX,
+              player.location.y - 60 - cam.scrollY,
             );
           }
         }
