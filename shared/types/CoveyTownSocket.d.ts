@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea' | 'EscapeRoomArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -231,20 +231,21 @@ export interface RoomResult {
   time: number;
 }
 
-
-export type RoomStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'COMPLETED';
 /**
  * Base type for the state of a game
  */
-export interface EscapeRoomState {
-  status: RoomStatus;
-  player?: PlayerID;
-  playerReady?: boolean;
+export interface EscapeRoomGameState extends WinnableGameState {
+  moves: ReadonlyArray<EscapeRoomMove>;
+  playerOne?: PlayerID;
+  playerTwo?: PlayerID;
+  playerOneReady?: boolean;
+  playerTwoReady?: boolean;
 } 
 
-export interface EscapeRoomArea<T extends EscapeRoomState> extends Interactable {
-  room: RoomInstance<T> | undefined;
-  history: RoomResult[];
+export interface EscapeRoomMove {
+  inventory: Inventory;
+  id: RoomInstanceID
+  time: number;
 }
 
 /**
@@ -253,14 +254,14 @@ export interface EscapeRoomArea<T extends EscapeRoomState> extends Interactable 
  * the player in the room, and the result of the room (completed the escape room or quit)
  * @see GameState
  */
-export interface RoomInstance<T extends EscapeRoomState> {
+export interface RoomInstance<T extends EscapeRoomGameState> {
   state: T;
   id: RoomInstanceID;
   player: PlayerID;
   result?: RoomResult;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand | JoinRoomCommand | LeaveRoomCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | GameMoveCommand<EscapeRoomMove> | StartGameCommand | LeaveGameCommand | JoinRoomCommand | LeaveRoomCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
