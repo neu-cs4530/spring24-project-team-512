@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea' | 'EscapeRoomArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -139,6 +139,25 @@ export interface ConnectFourGameState extends WinnableGameState {
   firstPlayer: ConnectFourColor;
 }
 
+export interface EscapeRoomGameState extends WinnableGameState {
+  // the list of moves the player has made, keeps track of progress
+  moves: ReadonlyArray<EscapeRoomMove>;
+  // The playerID of the first player, if any
+  player1?: PlayerID;
+  // The playerID of the second player, if any
+  player2?: PlayerID;
+  // Whether the red player is ready to start the game
+  player1Ready?: boolean;
+  // Whether the yellow player is ready to start the game
+  player2Ready?: boolean;
+  // the time the player has spent in the escape room
+  time: number;
+}
+export type Inventory = [];
+export interface EscapeRoomMove {
+  inventory: Inventory;
+}
+
 /**
  * Type for a move in ConnectFour
  * Columns are numbered 0-6, with 0 being the leftmost column
@@ -169,7 +188,8 @@ export type GameInstanceID = string;
  */
 export interface GameResult {
   gameID: GameInstanceID;
-  scores: { [playerName: string]: number };
+  scores?: { [playerName: string]: number };
+  time?: number;
 }
 
 /**

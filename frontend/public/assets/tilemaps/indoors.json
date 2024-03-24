@@ -895,14 +895,8 @@
                  "height":37.3333333333333,
                  "id":59,
                  "name":"Escape Room pad",
-                 "properties":[
-                        {
-                         "name":"target",
-                         "type":"object",
-                         "value":53
-                        }],
                  "rotation":0,
-                 "type":"Transporter",
+                 "type":"GameArea",
                  "visible":true,
                  "width":32,
                  "x":3681.33333333333,
