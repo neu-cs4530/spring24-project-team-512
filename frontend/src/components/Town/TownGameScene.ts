@@ -43,6 +43,10 @@ export default class TownGameScene extends Phaser.Scene {
 
   private _cursorKeys?: Phaser.Types.Input.Keyboard.CursorKeys;
 
+  private _rt?: Phaser.GameObjects.RenderTexture;
+
+  private _aiCharacter?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+
   /*
    * A "captured" key doesn't send events to the browser - they are trapped by Phaser
    * When pausing the game, we uncapture all keys, and when resuming, we re-capture them.
@@ -127,7 +131,12 @@ export default class TownGameScene extends Phaser.Scene {
       '16_Grocery_store_32x32',
       this._resourcePathPrefix + '/assets/tilesets/16_Grocery_store_32x32.png',
     );
+    this.load.image('mask', this._resourcePathPrefix + '/assets/mask1.png');
+
     this.load.tilemapTiledJSON('map', this._resourcePathPrefix + '/assets/tilemaps/indoors.json');
+
+    // this.load.image('opponent', 'assets/character-sprite.png');
+
     this.load.atlas(
       'atlas',
       this._resourcePathPrefix + '/assets/atlas/atlas.png',
@@ -173,6 +182,29 @@ export default class TownGameScene extends Phaser.Scene {
     return undefined;
   }
 
+  moveAI() {
+    // Randomly choose a direction to move
+    // const wall1 = this.map.findObject(
+    //   'Objects',
+    //   obj => obj.name === 'Room2 wall 1',
+    // ) as Phaser.Types.Tilemaps.TiledObject;
+    // const wall2 = this.map.findObject(
+    //   'Objects',
+    //   obj => obj.name === 'Room2 wall 2',
+    // ) as Phaser.Types.Tilemaps.TiledObject;
+
+    if (this._aiCharacter && this._aiCharacter.x >= 1550) {
+      this._aiCharacter.setVelocityX(-MOVEMENT_SPEED / 2); // Move left
+      this._aiCharacter.anims.play('misa-left-walk, true');
+      this._aiCharacter.setTexture('atlas', 'misa-left');
+    }
+    if (this._aiCharacter && this._aiCharacter.x <= 1050) {
+      this._aiCharacter.setVelocityX(MOVEMENT_SPEED / 2); // Move right
+      this._aiCharacter.anims.play('misa-right-walk, true');
+      this._aiCharacter.setTexture('atlas', 'misa-right');
+    }
+  }
+
   moveOurPlayerTo(destination: Partial<PlayerLocation>) {
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     if (!gameObjects) {
@@ -200,8 +232,27 @@ export default class TownGameScene extends Phaser.Scene {
 
   update() {
     if (this._paused) {
+      this.moveAI();
+      for (const player of this._players) {
+        if (
+          this._aiCharacter &&
+          Math.abs(player.location.x - this._aiCharacter.x) <= 80 &&
+          Math.abs(player.location.y - this._aiCharacter.y) <= 80
+        ) {
+          this._aiCharacter.setVisible(true);
+        }
+        if (
+          this._aiCharacter &&
+          Math.abs(player.location.x - this._aiCharacter.x) <= 5 &&
+          Math.abs(player.location.y - this._aiCharacter.y) <= 45
+        ) {
+          this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 2040, y: 1370 });
+        }
+      }
       return;
     }
+    this.moveAI();
+
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     if (gameObjects && this._cursors) {
       const prevVelocity = gameObjects.sprite.body.velocity.clone();
@@ -209,7 +260,69 @@ export default class TownGameScene extends Phaser.Scene {
 
       // Stop any previous movement from the last frame
       body.setVelocity(0);
+      //Update the location for the labels of all of the other players
+      for (const player of this._players) {
+        if (player.gameObjects?.label && player.gameObjects?.sprite.body) {
+          player.gameObjects.label.setX(player.gameObjects.sprite.body.x);
+          player.gameObjects.label.setY(player.gameObjects.sprite.body.y - 20);
 
+          //  Draw the spotlight on the player
+          const cam = this.cameras.main;
+
+          const room2 = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Room2',
+          ) as Phaser.Types.Tilemaps.TiledObject;
+          if (
+            room2.x !== undefined &&
+            room2.y !== undefined &&
+            room2.width !== undefined &&
+            room2.height !== undefined
+          ) {
+            if (
+              player.location.x < room2.x + room2.width &&
+              // player.location.x > room2.x - room2.width / 2 &&
+              // player.location.y < room2.y + room2.height / 2 //&&
+              player.location.y > room2.y - room2.height
+            ) {
+              this._aiCharacter?.setVisible(false);
+              // this.map.removeTileAt(player.location.x, player.location.y, true, true, 'Above Player');
+
+              // this._collidingLayers[2].tileAt(player.location.x, player.location.y, null);
+              //  Clear the RenderTexture
+              this._rt?.clear();
+
+              //  Fill it in black
+              this._rt?.fill(0x000000);
+
+              //  Erase the 'mask' texture from it based on the player position
+              //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
+              //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
+              if (player.flashlight) {
+                this._rt?.erase(
+                  'mask',
+                  player.location.x - 80 - cam.scrollX,
+                  player.location.y - 80 - cam.scrollY,
+                );
+              }
+            }
+            if (
+              this._aiCharacter &&
+              Math.abs(player.location.y - this._aiCharacter.y) <= 80 &&
+              Math.abs(player.location.x - this._aiCharacter.x) <= 80
+            ) {
+              this._aiCharacter.setVisible(true);
+            }
+            if (
+              this._aiCharacter &&
+              Math.abs(player.location.x - this._aiCharacter.x) <= 5 &&
+              Math.abs(player.location.y - this._aiCharacter.y) <= 45
+            ) {
+              this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 2040, y: 1370 });
+            }
+          }
+        }
+      }
       const primaryDirection = this.getNewMovementDirection();
       switch (primaryDirection) {
         case 'left':
@@ -280,14 +393,6 @@ export default class TownGameScene extends Phaser.Scene {
           }
         });
         this.coveyTownController.emitMovement(this._lastLocation);
-      }
-
-      //Update the location for the labels of all of the other players
-      for (const player of this._players) {
-        if (player.gameObjects?.label && player.gameObjects?.sprite.body) {
-          player.gameObjects.label.setX(player.gameObjects.sprite.body.x);
-          player.gameObjects.label.setY(player.gameObjects.sprite.body.y - 20);
-        }
       }
     }
   }
@@ -373,6 +478,12 @@ export default class TownGameScene extends Phaser.Scene {
       obj => obj.name === 'Spawn Point',
     ) as unknown as Phaser.GameObjects.Components.Transform;
 
+    //add the spawn point for the opponent in room 2
+    const oppSpawnPoint = this.map.findObject(
+      'Objects',
+      obj => obj.name === 'Opp Spawn Point',
+    ) as unknown as Phaser.GameObjects.Components.Transform;
+
     const labels = this.map.filterObjects('Objects', obj => obj.name === 'label');
     labels?.forEach(label => {
       if (label.x && label.y) {
@@ -430,6 +541,12 @@ export default class TownGameScene extends Phaser.Scene {
       locationManagedByGameScene: true,
     };
 
+    this._aiCharacter = this.physics.add
+      .sprite(oppSpawnPoint.x, oppSpawnPoint.y, 'atlas', 'misa-left')
+      .setSize(30, 40)
+      .setOffset(0, 24)
+      .setDepth(6);
+
     this._interactables = this.getInteractables();
 
     this.moveOurPlayerTo({ rotation: 'front', moving: false, x: spawnPoint.x, y: spawnPoint.y });
@@ -439,7 +556,14 @@ export default class TownGameScene extends Phaser.Scene {
     this._collidingLayers.push(wallsLayer);
     this._collidingLayers.push(aboveLayer);
     this._collidingLayers.push(onTheWallsLayer);
-    this._collidingLayers.forEach(layer => this.physics.add.collider(sprite, layer));
+    this._collidingLayers.forEach(layer => {
+      this.physics.add.collider(sprite, layer);
+    });
+    this._collidingLayers.forEach(layer => {
+      if (this._aiCharacter) {
+        this.physics.add.collider(this._aiCharacter, layer);
+      }
+    });
 
     // Create the player's walking animations from the texture atlas. These are stored in the global
     // animation manager so any sprite can access them.
@@ -493,6 +617,10 @@ export default class TownGameScene extends Phaser.Scene {
     camera.startFollow(this.coveyTownController.ourPlayer.gameObjects.sprite);
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
+    this._rt = this.add.renderTexture(0, 0, this.scale.width, this.scale.height);
+    //  Make sure it doesn't scroll with the camera
+    this._rt.setOrigin(0, 0);
+    this._rt.setScrollFactor(0, 0);
     // Help text that has a "fixed" position on the screen
     this.add
       .text(16, 16, `Arrow keys to move`, {
@@ -506,7 +634,6 @@ export default class TownGameScene extends Phaser.Scene {
       })
       .setScrollFactor(0)
       .setDepth(30);
-
     this._ready = true;
     this.updatePlayers(this.coveyTownController.players);
     // Call any listeners that are waiting for the game to be initialized

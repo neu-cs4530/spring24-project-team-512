@@ -19,6 +19,8 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private readonly _userName: string;
 
+  private _flashlight: boolean;
+
   public gameObjects?: PlayerGameObjects;
 
   constructor(id: string, userName: string, location: PlayerLocation) {
@@ -26,6 +28,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._id = id;
     this._userName = userName;
     this._location = location;
+    this._flashlight = true;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -36,6 +39,14 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   get location(): PlayerLocation {
     return this._location;
+  }
+
+  set flashlight(on: boolean) {
+    this._flashlight = on;
+  }
+
+  get flashlight(): boolean {
+    return this._flashlight;
   }
 
   get userName(): string {
