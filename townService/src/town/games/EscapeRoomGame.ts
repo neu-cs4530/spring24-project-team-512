@@ -33,7 +33,7 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
   public constructor() {
     super({
       moves: [],
-      status: 'WAITING_FOR_PLAYERS',
+      status: 'WAITING_TO_START',
       time: 0,
     });
     this._time = 0;

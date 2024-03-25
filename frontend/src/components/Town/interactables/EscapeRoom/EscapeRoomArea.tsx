@@ -1,11 +1,11 @@
 import { Button, Container, List, ListItem, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import PlayerController from '../../../../classes/PlayerController';
-import { useInteractableAreaController } from '../../../../classes/TownController';
+import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
+import GameAreaInteractable from '../GameArea';
 import EscapeRoomAreaController from '../../../../classes/interactable/EscapeRoomAreaController';
-
 /**
  * The TicTacToeArea component renders the TicTacToe game area.
  * It renders the current state of the area, optionally allowing the player to join the game.
@@ -44,13 +44,14 @@ export default function EscapeRoomArea({
   const gameAreaController =
     useInteractableAreaController<EscapeRoomAreaController>(interactableID);
   const townController = useTownController();
-
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
   const [time, setTime] = useState<number>(gameAreaController.time);
   const [joiningGame, setJoiningGame] = useState(false);
   const [p1, setPlayer1] = useState<PlayerController | undefined>(gameAreaController.player1);
   const [p2, setPlayer2] = useState<PlayerController | undefined>(gameAreaController.player2);
   const toast = useToast();
+
+  const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
   useEffect(() => {
     const updateGameState = () => {
@@ -97,6 +98,7 @@ export default function EscapeRoomArea({
           onClick={async () => {
             setJoiningGame(true);
             try {
+              gameArea?.movePlayer(2065, 1800);
               await gameAreaController.joinGame();
             } catch (err) {
               toast({

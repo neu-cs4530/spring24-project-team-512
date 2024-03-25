@@ -894,7 +894,13 @@
                 {
                  "height":37.3333333333333,
                  "id":59,
-                 "name":"Escape Room pad",
+                 "name":"Escape Room 1",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"EscapeRoom"
+                        }],
                  "rotation":0,
                  "type":"GameArea",
                  "visible":true,

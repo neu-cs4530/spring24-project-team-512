@@ -46,7 +46,7 @@ export default class EscapeRoomAreaController extends GameAreaController<
   get status(): GameStatus {
     const status = this._model.game?.state.status;
     if (!status) {
-      return 'WAITING_FOR_PLAYERS';
+      return 'WAITING_TO_START';
     }
     return status;
   }
