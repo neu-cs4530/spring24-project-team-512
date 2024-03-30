@@ -1,5 +1,11 @@
 import _ from 'lodash';
-import { EscapeRoomGameState, GameArea, GameStatus } from '../../types/CoveyTownSocket';
+import {
+  EscapeRoomGameState,
+  GameArea,
+  GameStatus,
+  Item,
+  PlayerID,
+} from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import GameAreaController, {
   GameEventTypes,
@@ -64,6 +70,16 @@ export default class EscapeRoomAreaController extends GameAreaController<
       gameID: instanceID,
       type: 'StartGame',
     });
+  }
+
+  public placeItem(id: PlayerID, item: Item) {
+    if (id === this.player1?.id) {
+      this._model.game?.state.player1Inventory?.items.push(item);
+    } else if (id === this.player2?.id) {
+      this._model.game?.state.player2Inventory?.items.push(item);
+    } else {
+      throw new Error(PLAYER_NOT_IN_GAME_ERROR);
+    }
   }
 
   /**

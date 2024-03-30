@@ -10,6 +10,7 @@ import GameArea from './interactables/GameArea';
 import Transporter from './interactables/Transporter';
 import ViewingArea from './interactables/ViewingArea';
 import PopUp from './interactables/PopUp';
+import KeyBox from './interactables/KeyBox';
 
 // Still not sure what the right type is here... "Interactable" doesn't do it
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,6 +25,8 @@ function interactableTypeForObjectType(type: string): any {
     return ViewingArea;
   } else if (type === 'GameArea') {
     return GameArea;
+  } else if (type === 'KeyBox') {
+    return KeyBox;
   } else {
     throw new Error(`Unknown object type: ${type}`);
   }

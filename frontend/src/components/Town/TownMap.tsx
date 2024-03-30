@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import useTownController from '../../hooks/useTownController';
 import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import NewConversationModal from './interactables/NewCoversationModal';
+import NewKeyBoxModal from './interactables/NewKeyBoxModal';
+
 import TownGameScene from './TownGameScene';
 import GameAreaWrapper from './interactables/GamesArea';
 import useChatContext from '../VideoCall/VideoFrontend/hooks/useChatContext/useChatContext';
@@ -84,6 +86,7 @@ export default function TownMap(): JSX.Element {
   return (
     <div id='app-container'>
       <NewConversationModal />
+      <NewKeyBoxModal />
       <GameAreaWrapper />
       <aside className={clsx(classes.chatWindowContainer, { [classes.hide]: !isChatWindowOpen })}>
         <ChatWindow />
