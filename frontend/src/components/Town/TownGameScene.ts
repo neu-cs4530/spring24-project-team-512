@@ -9,6 +9,7 @@ import ConversationArea from './interactables/ConversationArea';
 import GameArea from './interactables/GameArea';
 import Transporter from './interactables/Transporter';
 import ViewingArea from './interactables/ViewingArea';
+import PopUp from './interactables/PopUp';
 
 // Still not sure what the right type is here... "Interactable" doesn't do it
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,6 +18,8 @@ function interactableTypeForObjectType(type: string): any {
     return ConversationArea;
   } else if (type === 'Transporter') {
     return Transporter;
+  } else if (type === 'PopUp') {
+    return PopUp;
   } else if (type === 'ViewingArea') {
     return ViewingArea;
   } else if (type === 'GameArea') {
@@ -281,9 +284,9 @@ export default class TownGameScene extends Phaser.Scene {
           ) {
             if (
               player.location.x < room2.x + room2.width &&
-              // player.location.x > room2.x - room2.width / 2 &&
-              // player.location.y < room2.y + room2.height / 2 //&&
-              player.location.y > room2.y - room2.height
+              player.location.x > room2.x &&
+              player.location.y > room2.y &&
+              player.location.y < room2.y + room2.height
             ) {
               this._aiCharacter?.setVisible(false);
               // this.map.removeTileAt(player.location.x, player.location.y, true, true, 'Above Player');

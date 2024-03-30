@@ -47,6 +47,9 @@ export default function EscapeRoomArea({
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
   const [time, setTime] = useState<number>(gameAreaController.time);
   const [joiningGame, setJoiningGame] = useState(false);
+  const [inRoomP1, setEscapeRoomP1] = useState(gameAreaController.player1?.escapeRoom);
+  const [inRoomP2, setEscapeRoomP2] = useState(gameAreaController.player2?.escapeRoom);
+
   const [p1, setPlayer1] = useState<PlayerController | undefined>(gameAreaController.player1);
   const [p2, setPlayer2] = useState<PlayerController | undefined>(gameAreaController.player2);
   const toast = useToast();
@@ -59,6 +62,8 @@ export default function EscapeRoomArea({
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
       setPlayer2(gameAreaController.player2);
+      setEscapeRoomP1(false);
+      setEscapeRoomP2(false);
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     const onGameEnd = () => {
@@ -84,40 +89,60 @@ export default function EscapeRoomArea({
     };
   }, [townController, gameAreaController, toast]);
 
+  const inGame = gameAreaController.occupants.filter(player => player.escapeRoom === true);
   let gameStatusText = <></>;
-  if (gameStatus === 'IN_PROGRESS') {
+  if (gameStatus === 'IN_PROGRESS' && inGame.length > 0) {
     gameStatusText = <>Game in progress, current time: {time}</>;
+  } else if (gameStatus == 'WAITING_TO_START') {
+    const startGameButton = (
+      <Button
+        onClick={async () => {
+          setJoiningGame(true);
+          try {
+            await gameAreaController.startGame();
+            gameArea?.movePlayer(2065, 1800);
+          } catch (err) {
+            toast({
+              title: 'Error starting game',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+          setJoiningGame(false);
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Start Game
+      </Button>
+    );
+    gameStatusText = <b>Waiting for players to press start. {startGameButton}</b>;
   } else {
-    let joinGameButton = <></>;
-    if (
-      (gameAreaController.status === 'WAITING_TO_START' && !gameAreaController.isPlayer) ||
-      gameAreaController.status === 'OVER'
-    ) {
-      joinGameButton = (
-        <Button
-          onClick={async () => {
-            setJoiningGame(true);
-            try {
-              gameArea?.movePlayer(2065, 1800);
-              await gameAreaController.joinGame();
-            } catch (err) {
-              toast({
-                title: 'Error joining game',
-                description: (err as Error).toString(),
-                status: 'error',
-              });
-            }
-            setJoiningGame(false);
-          }}
-          isLoading={joiningGame}
-          disabled={joiningGame}>
-          Join New Game
-        </Button>
-      );
-    }
+    const joinGameButton = (
+      <Button
+        onClick={async () => {
+          setJoiningGame(true);
+          try {
+            await gameAreaController.joinGame();
+          } catch (err) {
+            toast({
+              title: 'Error joining game',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+          setJoiningGame(false);
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Join New Game
+      </Button>
+    );
+    let gameStatusStr;
+    if (gameStatus === 'OVER') gameStatusStr = 'over';
+    else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
     gameStatusText = (
       <b>
-        Game {gameStatus === 'WAITING_TO_START' ? 'not yet started' : 'over'}. {joinGameButton}
+        Game {gameStatusStr}. {joinGameButton}
       </b>
     );
   }

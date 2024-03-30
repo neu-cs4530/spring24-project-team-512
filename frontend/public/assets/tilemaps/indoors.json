@@ -857,15 +857,15 @@
                  "y":1426.66666666667
                 }, 
                 {
-                 "height":36,
+                 "height":96.6666666666665,
                  "id":55,
                  "name":"riddle displayer",
                  "rotation":0,
-                 "type":"",
+                 "type":"PopUp",
                  "visible":true,
-                 "width":21.3333333333335,
-                 "x":2054.66666666667,
-                 "y":1641.33333333333
+                 "width":81.3333333333335,
+                 "x":2020.66666666667,
+                 "y":1631.33333333333
                 }, 
                 {
                  "height":0,
@@ -992,6 +992,34 @@
                  "width":24.2424242424242,
                  "x":1548.48484848485,
                  "y":1936.36363636364
+                }, 
+                {
+                 "height":68,
+                 "id":72,
+                 "name":"Room2 door",
+                 "properties":[
+                        {
+                         "name":"target",
+                         "type":"object",
+                         "value":73
+                        }],
+                 "rotation":0,
+                 "type":"Transporter",
+                 "visible":true,
+                 "width":28,
+                 "x":1252,
+                 "y":2004
+                }, 
+                {
+                 "height":46,
+                 "id":73,
+                 "name":"Room Return",
+                 "rotation":0,
+                 "type":"",
+                 "visible":false,
+                 "width":42,
+                 "x":3464,
+                 "y":800
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1000,7 +1028,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":72,
+ "nextobjectid":74,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

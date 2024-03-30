@@ -21,6 +21,8 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private _flashlight: boolean;
 
+  private _inEscapeRoom: boolean;
+
   public gameObjects?: PlayerGameObjects;
 
   constructor(id: string, userName: string, location: PlayerLocation) {
@@ -29,6 +31,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._userName = userName;
     this._location = location;
     this._flashlight = true;
+    this._inEscapeRoom = false;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -39,6 +42,14 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   get location(): PlayerLocation {
     return this._location;
+  }
+
+  get escapeRoom(): boolean {
+    return this._inEscapeRoom;
+  }
+
+  set escapeRoom(inRoom: boolean) {
+    this._inEscapeRoom = inRoom;
   }
 
   set flashlight(on: boolean) {

@@ -252,6 +252,7 @@ export interface StartGameCommand {
   type: 'StartGame';
   gameID: GameInstanceID;
 }
+
 export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;

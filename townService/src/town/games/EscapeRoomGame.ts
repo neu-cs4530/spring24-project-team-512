@@ -21,9 +21,9 @@ import Game from './Game';
  * state of the escape room. @see EscapeRoomArea
  */
 export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoomMove> {
-  private _playerOne?: PlayerID;
+  // private _playerOne?: PlayerID;
 
-  private _playerTwo?: PlayerID;
+  // private _playerTwo?: PlayerID;
 
   private _time: number;
 
@@ -33,7 +33,7 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
   public constructor() {
     super({
       moves: [],
-      status: 'WAITING_TO_START',
+      status: 'WAITING_FOR_PLAYERS',
       time: 0,
     });
     this._time = 0;
@@ -89,13 +89,14 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
     if (this.state.player1 === player.id || this.state.player2 === player.id) {
       throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     }
-    if (!this._playerOne) {
+    player.escapeRoom = true;
+    if (!this.state.player1) {
       this.state = {
         ...this.state,
         status: 'WAITING_FOR_PLAYERS',
         player1: player.id,
       };
-    } else if (this._playerOne && !this._playerTwo) {
+    } else if (!this.state.player2) {
       this.state = {
         ...this.state,
         status: 'WAITING_FOR_PLAYERS',
@@ -140,8 +141,9 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
           player2: undefined,
           player2Ready: false,
         };
+      } else {
+        throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
       }
-      throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     };
     removePlayer(player.id);
     switch (this.state.status) {
@@ -180,7 +182,7 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
     if (this.state.status !== 'IN_PROGRESS') {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
     }
-    if (move.playerID !== this._playerOne && move.playerID !== this._playerTwo) {
+    if (move.playerID !== this.state.player1 && move.playerID !== this.state.player2) {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
   }

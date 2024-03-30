@@ -28,7 +28,7 @@ export default class EscapeRoomAreaController extends GameAreaController<
   }
 
   get player2(): PlayerController | undefined {
-    const player2 = this._model.game?.state.player1;
+    const player2 = this._model.game?.state.player2;
     if (player2) {
       return this.occupants.find(eachOccupant => eachOccupant.id === player2);
     }
@@ -46,13 +46,24 @@ export default class EscapeRoomAreaController extends GameAreaController<
   get status(): GameStatus {
     const status = this._model.game?.state.status;
     if (!status) {
-      return 'WAITING_TO_START';
+      return 'WAITING_FOR_PLAYERS';
     }
     return status;
   }
 
   get completed(): boolean {
     return false;
+  }
+
+  public async startGame(): Promise<void> {
+    const instanceID = this._instanceID;
+    if (!instanceID || this._model.game?.state.status !== 'WAITING_TO_START') {
+      throw new Error(NO_GAME_STARTABLE);
+    }
+    await this._townController.sendInteractableCommand(this.id, {
+      gameID: instanceID,
+      type: 'StartGame',
+    });
   }
 
   /**
