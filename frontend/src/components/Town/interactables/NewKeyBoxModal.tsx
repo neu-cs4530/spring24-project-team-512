@@ -21,7 +21,7 @@ import GameAreaInteractable from './GameArea';
 export default function NewKeyBoxModal(): JSX.Element {
   const coveyTownController = useTownController();
 
-  const keyBoxDisplay = useInteractable<GameAreaInteractable>('gameArea');
+  const keyBoxDisplay = useInteractable<GameAreaInteractable>('keyBox');
   // const gameAreaController =
   //   useInteractableAreaController<EscapeRoomAreaController>(interactableID);
   const [topic, setTopic] = useState<string>('');
