@@ -125,6 +125,7 @@ export default class TownGameScene extends Phaser.Scene {
       '1_Generic_32x32',
       this._resourcePathPrefix + '/assets/tilesets/1_Generic_32x32.png',
     );
+    // this.load.json('Graveyard', this._resourcePathPrefix + '/assets/tilesets/Graveyard.json');
     this.load.image(
       '13_Conference_Hall_32x32',
       this._resourcePathPrefix + '/assets/tilesets/13_Conference_Hall_32x32.png',
@@ -213,6 +214,29 @@ export default class TownGameScene extends Phaser.Scene {
 
   moveOurPlayerTo(destination: Partial<PlayerLocation>) {
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
+    const room1 = this.map.findObject(
+      'Objects',
+      obj => obj.name === 'Room1',
+    ) as Phaser.Types.Tilemaps.TiledObject;
+    if (gameObjects && room1.x && room1.y && room1.height && room1.width) {
+      if (
+        this.coveyTownController.ourPlayer.location.x < room1.x + room1.width &&
+        this.coveyTownController.ourPlayer.location.x > room1.x &&
+        this.coveyTownController.ourPlayer.location.y > room1.y &&
+        this.coveyTownController.ourPlayer.location.y < room1.y + room1.height &&
+        this.coveyTownController.ourPlayer.inventory.items.find(item => item.name === 'key') ===
+          undefined
+      ) {
+        return;
+      }
+    }
+    // if (
+    //   player.location.x < room2.x + room2.width &&
+    //   player.location.x > room2.x &&
+    //   player.location.y > room2.y &&
+    //   player.location.y < room2.y + room2.height
+    // ) {
+
     if (!gameObjects) {
       throw new Error('Unable to move player without game objects created first');
     }
@@ -279,6 +303,10 @@ export default class TownGameScene extends Phaser.Scene {
             'Objects',
             obj => obj.name === 'Room2',
           ) as Phaser.Types.Tilemaps.TiledObject;
+          const room3 = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Room3',
+          ) as Phaser.Types.Tilemaps.TiledObject;
           if (
             room2.x !== undefined &&
             room2.y !== undefined &&
@@ -304,7 +332,7 @@ export default class TownGameScene extends Phaser.Scene {
               //  Erase the 'mask' texture from it based on the player position
               //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
               //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
-              if (player.flashlight) {
+              if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
                 this._rt?.erase(
                   'mask',
                   player.location.x - 80 - cam.scrollX,
@@ -325,6 +353,21 @@ export default class TownGameScene extends Phaser.Scene {
               Math.abs(player.location.y - this._aiCharacter.y) <= 45
             ) {
               this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 2040, y: 1370 });
+            }
+          }
+          if (
+            room3.x !== undefined &&
+            room3.y !== undefined &&
+            room3.width !== undefined &&
+            room3.height !== undefined
+          ) {
+            if (
+              player.location.x < room3.x + room3.width &&
+              player.location.x > room3.x &&
+              player.location.y > room3.y &&
+              player.location.y < room3.y + room3.height
+            ) {
+              this._rt?.clear();
             }
           }
         }
@@ -439,6 +482,7 @@ export default class TownGameScene extends Phaser.Scene {
       '5_Classroom_and_library_32x32',
       '12_Kitchen_32x32',
       '1_Generic_32x32',
+      // 'Graveyard',
       '13_Conference_Hall_32x32',
       '14_Basement_32x32',
       '16_Grocery_store_32x32',

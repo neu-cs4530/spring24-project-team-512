@@ -21,7 +21,9 @@ import GameAreaInteractable from './GameArea';
 export default function NewKeyBoxModal(): JSX.Element {
   const coveyTownController = useTownController();
 
-  const keyBoxDisplay = useInteractable<GameAreaInteractable>('keyBox');
+  const keyBoxDisplay = useInteractable('keyBox');
+  const gameArea = useInteractable<GameAreaInteractable>('gameArea');
+
   // const gameAreaController =
   //   useInteractableAreaController<EscapeRoomAreaController>(interactableID);
   const [topic, setTopic] = useState<string>('');
@@ -45,43 +47,65 @@ export default function NewKeyBoxModal(): JSX.Element {
   const toast = useToast();
 
   const enterCombination = useCallback(async () => {
-    if (topic === '240') {
-      // keyBoxDisplay?.placeItem(
-      //   {
-      //     name: 'key',
-      //     description: 'key for room 2',
-      //     tile: '',
-      //   },
-      //   coveyTownController.ourPlayer.id,
-      // );
-      // name: string;
-      // description: string
-      // tile: string;
-      // gameAreaController.placeItem(coveyTownController.ourPlayer.id, {
-      //   name: 'key',
-      //   description: 'key for room 2',
-      //   tile: '',
-      try {
-        toast({
-          title: 'Conversation Created!',
-          status: 'success',
+    if (keyBoxDisplay) {
+      if (topic === '240') {
+        coveyTownController.ourPlayer.placeItem({
+          name: 'key',
+          description: 'key for room 2',
+          tile: '',
         });
-        setTopic('');
-        coveyTownController.unPause();
-        closeModal();
-      } catch (err) {
-        if (err instanceof Error) {
+        coveyTownController.ourPlayer.placeItem({
+          name: 'flashlight',
+          description: 'key for room 2',
+          tile: '',
+        });
+        // gameArea?.placeTile(1940, 1440);
+        try {
           toast({
-            title: 'Unable to create conversation',
-            description: err.toString(),
-            status: 'error',
+            title: 'That is correct!',
+            status: 'success',
           });
-        } else {
-          console.trace(err);
+          setTopic('');
+          coveyTownController.unPause();
+          closeModal();
+        } catch (err) {
+          if (err instanceof Error) {
+            toast({
+              title: 'That is Wrong!',
+              description: err.toString(),
+              status: 'error',
+            });
+          } else {
+            console.trace(err);
+            toast({
+              title: 'Unexpected Error',
+              status: 'error',
+            });
+          }
+        }
+      } else {
+        try {
           toast({
-            title: 'Unexpected Error',
-            status: 'error',
+            title: 'That is incorrect!',
+            status: 'success',
           });
+          setTopic('');
+          coveyTownController.unPause();
+          closeModal();
+        } catch (err) {
+          if (err instanceof Error) {
+            toast({
+              title: 'That is Wrong!',
+              description: err.toString(),
+              status: 'error',
+            });
+          } else {
+            console.trace(err);
+            toast({
+              title: 'Unexpected Error',
+              status: 'error',
+            });
+          }
         }
       }
     }

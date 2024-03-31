@@ -32,6 +32,10 @@ export default class GameArea extends Interactable {
     this._scene.moveOurPlayerTo({ x: x1, y: y1 });
   }
 
+  // placeTile(x1: number, y1: number): void {
+  //   this._scene.map.putTileAt({ x: x1, y: y1 });
+  // }
+
   // placeItem(item: Item, playerID: PlayerID): void {
   //   if (
   //     this.townController.getGameAreaController(this).toInteractableAreaModel().type ===
