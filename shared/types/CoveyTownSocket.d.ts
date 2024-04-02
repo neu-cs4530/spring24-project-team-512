@@ -151,9 +151,25 @@ export interface EscapeRoomGameState extends WinnableGameState {
   // Whether the yellow player is ready to start the game
   player2Ready?: boolean;
   // the time the player has spent in the escape room
+  flashlight?: boolean;
+  player1In?: boolean;
+  player2In?: boolean;
+  player1Inventory?: Inventory;
+  player2Inventory?: Inventory;
+
   time: number;
 }
-export type Inventory = [];
+export type Inventory = {
+  capacity: number;
+  length: number
+  items: Item[];
+}
+
+export type Item = {
+  name: string;
+  description: string
+  tile: string;
+}
 export interface EscapeRoomMove {
   inventory: Inventory;
 }
@@ -236,7 +252,7 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | SingleGameCommand | LeaveGameCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -253,6 +269,11 @@ export interface StartGameCommand {
   gameID: GameInstanceID;
 }
 
+export interface SingleGameCommand {
+  type: 'SingleGame';
+  gameID: GameInstanceID;
+}
+
 export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
@@ -263,6 +284,8 @@ export type InteractableCommandReturnType<CommandType extends InteractableComman
   CommandType extends ViewingAreaUpdateCommand ? undefined :
   CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
   CommandType extends LeaveGameCommand ? undefined :
+  CommandType extends LeaveGameCommand ? undefined :
+
   never;
 
 export type InteractableCommandResponse<MessageType> = {

@@ -355,33 +355,33 @@ export default class TownGameScene extends Phaser.Scene {
             room2.width !== undefined &&
             room2.height !== undefined
           ) {
-            if (
-              player.location.x < room2.x + room2.width &&
-              player.location.x > room2.x &&
-              player.location.y > room2.y &&
-              player.location.y < room2.y + room2.height
-            ) {
-              this._aiCharacter?.setVisible(false);
-              // this.map.removeTileAt(player.location.x, player.location.y, true, true, 'Above Player');
+            // if (
+            //   player.location.x < room2.x + room2.width &&
+            //   player.location.x > room2.x &&
+            //   player.location.y > room2.y &&
+            //   player.location.y < room2.y + room2.height
+            // ) {
+            this._aiCharacter?.setVisible(false);
+            // this.map.removeTileAt(player.location.x, player.location.y, true, true, 'Above Player');
 
-              // this._collidingLayers[2].tileAt(player.location.x, player.location.y, null);
-              //  Clear the RenderTexture
-              this._rt?.clear();
+            // this._collidingLayers[2].tileAt(player.location.x, player.location.y, null);
+            //  Clear the RenderTexture
+            this._rt?.clear();
 
-              //  Fill it in black
-              this._rt?.fill(0x000000);
+            //  Fill it in black
+            this._rt?.fill(0x000000, 1, 960, 1860, 668, 638);
 
-              //  Erase the 'mask' texture from it based on the player position
-              //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
-              //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
-              if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
-                this._rt?.erase(
-                  'mask',
-                  player.location.x - 80 - cam.scrollX,
-                  player.location.y - 80 - cam.scrollY,
-                );
-              }
+            //  Erase the 'mask' texture from it based on the player position
+            //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
+            //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
+            if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
+              this._rt?.erase(
+                'mask',
+                player.location.x - 80 - cam.scrollX,
+                player.location.y - 80 - cam.scrollY,
+              );
             }
+            // }
             if (
               this._aiCharacter &&
               Math.abs(player.location.y - this._aiCharacter.y) <= 80 &&
@@ -709,16 +709,10 @@ export default class TownGameScene extends Phaser.Scene {
     camera.startFollow(this.coveyTownController.ourPlayer.gameObjects.sprite);
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-    const room2 = this.map.findObject(
-      'Objects',
-      obj => obj.name === 'Room2',
-    ) as Phaser.Types.Tilemaps.TiledObject;
-    if (room2.x && room2.y && room2.width && room2.height) {
-      this._rt = this.add.renderTexture(room2.x, room2.y, room2.width, room2.height);
-      //  Make sure it doesn't scroll with the camera
-      this._rt?.setOrigin(room2.x, room2.y);
-      this._rt?.setScrollFactor(room2.x, room2.y);
-    }
+    this._rt = this.add.renderTexture(0, 0, this.scale.width, this.scale.height);
+    //  Make sure it doesn't scroll with the camera
+    this._rt?.setOrigin(0, 0);
+    this._rt?.setScrollFactor(0, 0);
     // Help text that has a "fixed" position on the screen
     this.add
       .text(16, 16, `Arrow keys to move`, {

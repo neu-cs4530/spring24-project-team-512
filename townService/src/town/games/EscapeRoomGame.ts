@@ -76,6 +76,19 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
     };
   }
 
+  public singleGame(player: Player): void {
+    if (this.state.player1 !== player.id) {
+      throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
+    }
+    if (this.state.player1 === player.id) {
+      this.state.player1Ready = true;
+    }
+    this.state = {
+      ...this.state,
+      status: this.state.player1Ready ? 'IN_PROGRESS' : 'WAITING_TO_START',
+    };
+  }
+
   /**
    * Joins a player to the game.
    * - If both players are now assigned, updates the game status to WAITING_TO_START.
