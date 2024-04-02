@@ -112,10 +112,10 @@ export default function EscapeRoomArea({
         }}
         isLoading={joiningGame}
         disabled={joiningGame}>
-        Start Game
+        Two Player
       </Button>
     );
-    gameStatusText = <b>Waiting for players to press start. {startGameButton}</b>;
+    gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
   } else if (gameStatus == 'WAITING_FOR_PLAYERS' && gameAreaController.player1) {
     const singleGameButton = (
       <Button
@@ -135,10 +135,12 @@ export default function EscapeRoomArea({
         }}
         isLoading={joiningGame}
         disabled={joiningGame}>
-        Start Game
+        Single Player
       </Button>
     );
-    gameStatusText = <b>Waiting for player to press start. {singleGameButton}</b>;
+    gameStatusText = (
+      <b>Press to play single player, or wait for one more player. {singleGameButton}</b>
+    );
   } else {
     const joinGameButton = (
       <Button
