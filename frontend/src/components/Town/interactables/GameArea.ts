@@ -19,7 +19,7 @@ export default class GameArea extends Interactable {
 
   overlapExit(): void {
     const gameType = this.townController.getGameAreaController(this).toInteractableAreaModel().type;
-    if (gameType === 'EscapeRoomArea') {
+    if (gameType === 'EscapeRoomArea' && this.townController.ourPlayer.escapeRoom == true) {
       return;
     }
     if (this._isInteracting) {

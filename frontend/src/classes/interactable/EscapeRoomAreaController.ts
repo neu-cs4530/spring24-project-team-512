@@ -72,6 +72,17 @@ export default class EscapeRoomAreaController extends GameAreaController<
     });
   }
 
+  public async singleGame(): Promise<void> {
+    const instanceID = this._instanceID;
+    if (!instanceID) {
+      throw new Error(NO_GAME_STARTABLE);
+    }
+    await this._townController.sendInteractableCommand(this.id, {
+      gameID: instanceID,
+      type: 'SingleGame',
+    });
+  }
+
   public placeItem(id: PlayerID, item: Item) {
     if (id === this.player1?.id) {
       this._model.game?.state.player1Inventory?.items.push(item);

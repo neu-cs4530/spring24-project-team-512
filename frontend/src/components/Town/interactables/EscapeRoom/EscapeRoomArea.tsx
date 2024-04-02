@@ -116,6 +116,29 @@ export default function EscapeRoomArea({
       </Button>
     );
     gameStatusText = <b>Waiting for players to press start. {startGameButton}</b>;
+  } else if (gameStatus == 'WAITING_FOR_PLAYERS' && gameAreaController.player1) {
+    const singleGameButton = (
+      <Button
+        onClick={async () => {
+          setJoiningGame(true);
+          try {
+            await gameAreaController.singleGame();
+            gameArea?.movePlayer(2065, 1800);
+          } catch (err) {
+            toast({
+              title: 'Error starting game',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+          setJoiningGame(false);
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Start Game
+      </Button>
+    );
+    gameStatusText = <b>Waiting for player to press start. {singleGameButton}</b>;
   } else {
     const joinGameButton = (
       <Button

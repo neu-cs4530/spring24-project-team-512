@@ -117,6 +117,8 @@ export default class TownGameScene extends Phaser.Scene {
       '5_Classroom_and_library_32x32',
       this._resourcePathPrefix + '/assets/tilesets/5_Classroom_and_library_32x32.png',
     );
+
+    this.load.image('Graveyard', this._resourcePathPrefix + '/assets/tilesets/Graveyard.png');
     this.load.image(
       '12_Kitchen_32x32',
       this._resourcePathPrefix + '/assets/tilesets/12_Kitchen_32x32.png',
@@ -209,6 +211,46 @@ export default class TownGameScene extends Phaser.Scene {
       this._aiCharacter.setVelocityX(MOVEMENT_SPEED / 2); // Move right
       this._aiCharacter.anims.play('misa-right-walk, true');
       this._aiCharacter.setTexture('atlas', 'misa-right');
+    }
+  }
+
+  inRoom1() {
+    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
+
+    const room1 = this.map.findObject(
+      'Objects',
+      obj => obj.name === 'Room1',
+    ) as Phaser.Types.Tilemaps.TiledObject;
+    if (gameObjects && room1.x && room1.y && room1.height && room1.width) {
+      if (
+        this.coveyTownController.ourPlayer.location.x < room1.x + room1.width &&
+        this.coveyTownController.ourPlayer.location.x > room1.x &&
+        this.coveyTownController.ourPlayer.location.y > room1.y &&
+        this.coveyTownController.ourPlayer.location.y < room1.y + room1.height &&
+        this.coveyTownController.ourPlayer.inventory.items.find(item => item.name === 'key') ===
+          undefined
+      ) {
+        this.coveyTownController.ourPlayer.escapeRoom = true;
+      }
+    }
+  }
+
+  inRoomReturn() {
+    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
+
+    const roomReturn = this.map.findObject(
+      'Objects',
+      obj => obj.name === 'Room Return',
+    ) as Phaser.Types.Tilemaps.TiledObject;
+    if (gameObjects && roomReturn.x && roomReturn.y && roomReturn.height && roomReturn.width) {
+      if (
+        this.coveyTownController.ourPlayer.location.x < roomReturn.x + roomReturn.width &&
+        this.coveyTownController.ourPlayer.location.x > roomReturn.x &&
+        this.coveyTownController.ourPlayer.location.y > roomReturn.y &&
+        this.coveyTownController.ourPlayer.location.y < roomReturn.y + roomReturn.height
+      ) {
+        this.coveyTownController.ourPlayer.escapeRoom = false;
+      }
     }
   }
 
@@ -482,7 +524,7 @@ export default class TownGameScene extends Phaser.Scene {
       '5_Classroom_and_library_32x32',
       '12_Kitchen_32x32',
       '1_Generic_32x32',
-      // 'Graveyard',
+      'Graveyard',
       '13_Conference_Hall_32x32',
       '14_Basement_32x32',
       '16_Grocery_store_32x32',
@@ -667,10 +709,16 @@ export default class TownGameScene extends Phaser.Scene {
     camera.startFollow(this.coveyTownController.ourPlayer.gameObjects.sprite);
     camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-    this._rt = this.add.renderTexture(0, 0, this.scale.width, this.scale.height);
-    //  Make sure it doesn't scroll with the camera
-    this._rt.setOrigin(0, 0);
-    this._rt.setScrollFactor(0, 0);
+    const room2 = this.map.findObject(
+      'Objects',
+      obj => obj.name === 'Room2',
+    ) as Phaser.Types.Tilemaps.TiledObject;
+    if (room2.x && room2.y && room2.width && room2.height) {
+      this._rt = this.add.renderTexture(room2.x, room2.y, room2.width, room2.height);
+      //  Make sure it doesn't scroll with the camera
+      this._rt?.setOrigin(room2.x, room2.y);
+      this._rt?.setScrollFactor(room2.x, room2.y);
+    }
     // Help text that has a "fixed" position on the screen
     this.add
       .text(16, 16, `Arrow keys to move`, {
