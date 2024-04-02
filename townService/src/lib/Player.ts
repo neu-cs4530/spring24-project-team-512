@@ -23,6 +23,8 @@ export default class Player {
   /** A special town emitter that will emit events to the entire town BUT NOT to this player */
   public readonly townEmitter: TownEmitter;
 
+  private _inEscapeRoom: boolean;
+
   constructor(userName: string, townEmitter: TownEmitter) {
     this.location = {
       x: 0,
@@ -34,6 +36,7 @@ export default class Player {
     this._id = nanoid();
     this._sessionToken = nanoid();
     this.townEmitter = townEmitter;
+    this._inEscapeRoom = false;
   }
 
   get userName(): string {
@@ -42,6 +45,14 @@ export default class Player {
 
   get id(): string {
     return this._id;
+  }
+
+  get escapeRoom(): boolean {
+    return this._inEscapeRoom;
+  }
+
+  set escapeRoom(inRoom: boolean) {
+    this._inEscapeRoom = inRoom;
   }
 
   set videoToken(value: string | undefined) {

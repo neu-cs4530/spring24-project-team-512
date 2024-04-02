@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import TypedEmitter from 'typed-emitter';
-import { Player as PlayerModel, PlayerLocation } from '../types/CoveyTownSocket';
+import { Player as PlayerModel, PlayerLocation, Inventory, Item } from '../types/CoveyTownSocket';
 export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
@@ -19,6 +19,12 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private readonly _userName: string;
 
+  private _flashlight: boolean;
+
+  private _inEscapeRoom: boolean;
+
+  private _inventory: Inventory;
+
   public gameObjects?: PlayerGameObjects;
 
   constructor(id: string, userName: string, location: PlayerLocation) {
@@ -26,6 +32,9 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._id = id;
     this._userName = userName;
     this._location = location;
+    this._flashlight = true;
+    this._inventory = { capacity: 10, length: 0, items: [] };
+    this._inEscapeRoom = false;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -36,6 +45,26 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   get location(): PlayerLocation {
     return this._location;
+  }
+
+  get escapeRoom(): boolean {
+    return this._inEscapeRoom;
+  }
+
+  set escapeRoom(inRoom: boolean) {
+    this._inEscapeRoom = inRoom;
+  }
+
+  set flashlight(on: boolean) {
+    this._flashlight = on;
+  }
+
+  get flashlight(): boolean {
+    return this._flashlight;
+  }
+
+  get inventory(): Inventory {
+    return this._inventory;
   }
 
   get userName(): string {
@@ -80,6 +109,12 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
       }
       label.setX(sprite.body.x);
       label.setY(sprite.body.y - 20);
+    }
+  }
+
+  public placeItem(item: Item): void {
+    if (!this._inventory.items.includes(item)) {
+      this._inventory.items.push(item);
     }
   }
 

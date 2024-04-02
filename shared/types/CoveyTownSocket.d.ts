@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea' | 'EscapeRoomArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -139,6 +139,41 @@ export interface ConnectFourGameState extends WinnableGameState {
   firstPlayer: ConnectFourColor;
 }
 
+export interface EscapeRoomGameState extends WinnableGameState {
+  // the list of moves the player has made, keeps track of progress
+  moves: ReadonlyArray<EscapeRoomMove>;
+  // The playerID of the first player, if any
+  player1?: PlayerID;
+  // The playerID of the second player, if any
+  player2?: PlayerID;
+  // Whether the red player is ready to start the game
+  player1Ready?: boolean;
+  // Whether the yellow player is ready to start the game
+  player2Ready?: boolean;
+  // the time the player has spent in the escape room
+  flashlight?: boolean;
+  player1In?: boolean;
+  player2In?: boolean;
+  player1Inventory?: Inventory;
+  player2Inventory?: Inventory;
+
+  time: number;
+}
+export type Inventory = {
+  capacity: number;
+  length: number
+  items: Item[];
+}
+
+export type Item = {
+  name: string;
+  description: string
+  tile: string;
+}
+export interface EscapeRoomMove {
+  inventory: Inventory;
+}
+
 /**
  * Type for a move in ConnectFour
  * Columns are numbered 0-6, with 0 being the leftmost column
@@ -169,7 +204,8 @@ export type GameInstanceID = string;
  */
 export interface GameResult {
   gameID: GameInstanceID;
-  scores: { [playerName: string]: number };
+  scores?: { [playerName: string]: number };
+  time?: number;
 }
 
 /**
@@ -216,7 +252,7 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | SingleGameCommand | LeaveGameCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -232,6 +268,12 @@ export interface StartGameCommand {
   type: 'StartGame';
   gameID: GameInstanceID;
 }
+
+export interface SingleGameCommand {
+  type: 'SingleGame';
+  gameID: GameInstanceID;
+}
+
 export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
@@ -242,6 +284,8 @@ export type InteractableCommandReturnType<CommandType extends InteractableComman
   CommandType extends ViewingAreaUpdateCommand ? undefined :
   CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
   CommandType extends LeaveGameCommand ? undefined :
+  CommandType extends LeaveGameCommand ? undefined :
+
   never;
 
 export type InteractableCommandResponse<MessageType> = {
