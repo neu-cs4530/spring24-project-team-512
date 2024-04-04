@@ -204,7 +204,7 @@ export type GameInstanceID = string;
  */
 export interface GameResult {
   gameID: GameInstanceID;
-  scores?: { [playerName: string]: number };
+  scores: { [playerName: string]: number };
   time?: number;
 }
 

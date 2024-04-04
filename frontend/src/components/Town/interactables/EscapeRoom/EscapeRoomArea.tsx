@@ -47,8 +47,6 @@ export default function EscapeRoomArea({
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
   const [time, setTime] = useState<number>(gameAreaController.time);
   const [joiningGame, setJoiningGame] = useState(false);
-  const [inRoomP1, setEscapeRoomP1] = useState(gameAreaController.player1?.escapeRoom);
-  const [inRoomP2, setEscapeRoomP2] = useState(gameAreaController.player2?.escapeRoom);
 
   const [p1, setPlayer1] = useState<PlayerController | undefined>(gameAreaController.player1);
   const [p2, setPlayer2] = useState<PlayerController | undefined>(gameAreaController.player2);
@@ -62,8 +60,6 @@ export default function EscapeRoomArea({
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
       setPlayer2(gameAreaController.player2);
-      setEscapeRoomP1(false);
-      setEscapeRoomP2(false);
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     const onGameEnd = () => {
@@ -147,6 +143,7 @@ export default function EscapeRoomArea({
         onClick={async () => {
           setJoiningGame(true);
           try {
+            if (p1) p1.escapeRoom = true;
             await gameAreaController.joinGame();
           } catch (err) {
             toast({

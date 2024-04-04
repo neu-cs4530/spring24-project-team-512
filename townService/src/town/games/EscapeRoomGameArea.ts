@@ -1,4 +1,3 @@
-import assert from 'assert';
 import GameArea from './GameArea';
 import InvalidParametersError, {
   GAME_ID_MISSMATCH_MESSAGE,
@@ -34,6 +33,7 @@ export default class EscapeRoomGameArea extends GameArea<EscapeRoomGame> {
         if (player1 && player2) {
           this._history.push({
             gameID,
+            scores: { '': 0 },
             time: this._game?.state?.time,
           });
         }

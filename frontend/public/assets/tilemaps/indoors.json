@@ -4,7 +4,7 @@
      "export":
         {
          "format":"json",
-         "target":"..\/tilemaps\/indoors2.json"
+         "target":"indoors2.json"
         }
     },
  "height":80,
@@ -953,7 +953,7 @@
                  "id":63,
                  "name":"Room2",
                  "rotation":0,
-                 "type":"",
+                 "type":"HintArea",
                  "visible":true,
                  "width":668,
                  "x":964,
@@ -1037,7 +1037,7 @@
                  "id":76,
                  "name":"Room1",
                  "rotation":0,
-                 "type":"",
+                 "type":"HintArea",
                  "visible":true,
                  "width":518,
                  "x":1804,
@@ -1088,7 +1088,7 @@
                  "id":81,
                  "name":"Room3",
                  "rotation":0,
-                 "type":"",
+                 "type":"HintArea",
                  "visible":true,
                  "width":534,
                  "x":96,

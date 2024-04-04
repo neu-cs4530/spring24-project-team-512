@@ -1,15 +1,7 @@
-import _ from 'lodash';
-import {
-  EscapeRoomGameState,
-  GameArea,
-  GameStatus,
-  Item,
-  PlayerID,
-} from '../../types/CoveyTownSocket';
+import { EscapeRoomGameState, GameStatus, Item, PlayerID } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import GameAreaController, {
   GameEventTypes,
-  NO_GAME_IN_PROGRESS_ERROR,
   NO_GAME_STARTABLE,
   PLAYER_NOT_IN_GAME_ERROR,
 } from './GameAreaController';
@@ -108,6 +100,9 @@ export default class EscapeRoomAreaController extends GameAreaController<
    * Returns true if the game is not empty and the game is not waiting for players
    */
   public isActive(): boolean {
-    return !this.isEmpty() && this.status !== 'WAITING_FOR_PLAYERS';
+    if (!this.isEmpty()) return true;
+    if (this.player1 !== undefined) return this.player1?.escapeRoom;
+    if (this.player2 !== undefined) return this.player2?.escapeRoom;
+    return false;
   }
 }

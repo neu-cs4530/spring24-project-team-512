@@ -5,6 +5,7 @@ import useTownController from '../../hooks/useTownController';
 import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import NewConversationModal from './interactables/NewCoversationModal';
 import NewKeyBoxModal from './interactables/NewKeyBoxModal';
+import NewHintModal from './interactables/HintModal';
 
 import TownGameScene from './TownGameScene';
 import GameAreaWrapper from './interactables/GamesArea';
@@ -87,6 +88,7 @@ export default function TownMap(): JSX.Element {
     <div id='app-container'>
       <NewConversationModal />
       <NewKeyBoxModal />
+      <NewHintModal />
       <GameAreaWrapper />
       <aside className={clsx(classes.chatWindowContainer, { [classes.hide]: !isChatWindowOpen })}>
         <ChatWindow />

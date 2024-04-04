@@ -1,4 +1,4 @@
-import TownController, { useInteractable } from '../../classes/TownController';
+import TownController from '../../classes/TownController';
 import TownGameScene from './TownGameScene';
 
 //TODO is there not some way to figure this out from generic types/supertypes?
@@ -8,7 +8,8 @@ export type KnownInteractableTypes =
   | 'transporter'
   | 'gameArea'
   | 'popUp'
-  | 'keyBox';
+  | 'keyBox'
+  | 'hintArea';
 
 /**
  * A base abstract class for representing an "interactable" in the Phaser game world.

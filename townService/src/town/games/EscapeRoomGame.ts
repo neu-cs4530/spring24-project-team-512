@@ -7,12 +7,7 @@ import InvalidParametersError, {
   PLAYER_NOT_IN_GAME_MESSAGE,
 } from '../../lib/InvalidParametersError';
 
-import {
-  EscapeRoomGameState,
-  PlayerID,
-  EscapeRoomMove,
-  GameMove,
-} from '../../types/CoveyTownSocket';
+import { EscapeRoomGameState, EscapeRoomMove, GameMove } from '../../types/CoveyTownSocket';
 
 import Game from './Game';
 
