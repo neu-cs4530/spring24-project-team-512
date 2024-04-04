@@ -13,16 +13,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useInteractable, useInteractableAreaController } from '../../../classes/TownController';
-import EscapeRoomAreaController from '../../../classes/interactable/EscapeRoomAreaController';
+import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
-import GameAreaInteractable from './GameArea';
 
 export default function NewKeyBoxModal(): JSX.Element {
   const coveyTownController = useTownController();
 
   const keyBoxDisplay = useInteractable('keyBox');
-  const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
   // const gameAreaController =
   //   useInteractableAreaController<EscapeRoomAreaController>(interactableID);
@@ -56,7 +53,7 @@ export default function NewKeyBoxModal(): JSX.Element {
         });
         coveyTownController.ourPlayer.placeItem({
           name: 'flashlight',
-          description: 'key for room 2',
+          description: 'flashlight',
           tile: '',
         });
         // gameArea?.placeTile(1940, 1440);
