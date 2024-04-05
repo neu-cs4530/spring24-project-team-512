@@ -172,8 +172,32 @@ export default function EscapeRoomArea({
         Single Player
       </Button>
     );
+    const joinGameButton = (
+      <Button
+        onClick={async () => {
+          setJoiningGame(true);
+          try {
+            if (p1) p1.escapeRoom = true;
+            await gameAreaController.joinGame();
+          } catch (err) {
+            toast({
+              title: 'Error joining game',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+          setJoiningGame(false);
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Join New Game
+      </Button>
+    );
     gameStatusText = (
-      <b>Press to play single player, or wait for one more player. {singleGameButton}</b>
+      <b>
+        Press to play single player, or wait for one more player. {singleGameButton}.
+        {joinGameButton}
+      </b>
     );
   } else {
     const joinGameButton = (
