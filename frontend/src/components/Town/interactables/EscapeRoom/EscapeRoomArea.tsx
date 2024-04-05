@@ -55,11 +55,16 @@ export default function EscapeRoomArea({
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
   useEffect(() => {
+    console.log(townController.ourPlayer);
     const updateGameState = () => {
+      console.log(gameAreaController);
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
       setPlayer2(gameAreaController.player2);
+      if (areBothPlayerReady()) {
+        gameArea?.movePlayer(2065, 1800);
+      }
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     const onGameEnd = () => {
@@ -78,6 +83,7 @@ export default function EscapeRoomArea({
         });
       }
     };
+
     gameAreaController.addListener('gameEnd', onGameEnd);
     return () => {
       gameAreaController.removeListener('gameEnd', onGameEnd);
@@ -85,34 +91,63 @@ export default function EscapeRoomArea({
     };
   }, [townController, gameAreaController, toast]);
 
+  const isPlayer1Ready = () => {
+    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+    return gameState?.player1Ready;
+  };
+
+  const isPlayer2Ready = () => {
+    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+    return gameState?.player2Ready;
+  };
+
+  const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
+
   const inGame = gameAreaController.occupants.filter(player => player.escapeRoom === true);
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS' && inGame.length > 0) {
     gameStatusText = <>Game in progress, current time: {time}</>;
+    // if(areBothPlayerReady()) {
+    gameArea?.movePlayer(2065, 1800);
+    // }
   } else if (gameStatus == 'WAITING_TO_START') {
-    const startGameButton = (
-      <Button
-        onClick={async () => {
-          setJoiningGame(true);
-          try {
-            await gameAreaController.startGame();
-            gameArea?.movePlayer(2065, 1800);
-          } catch (err) {
-            toast({
-              title: 'Error starting game',
-              description: (err as Error).toString(),
-              status: 'error',
-            });
-          }
-          setJoiningGame(false);
-        }}
-        isLoading={joiningGame}
-        disabled={joiningGame}>
-        Two Player
-      </Button>
-    );
-    gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
-  } else if (gameStatus == 'WAITING_FOR_PLAYERS' && gameAreaController.player1) {
+    if (
+      gameAreaController.player1?.userName === townController.ourPlayer.userName &&
+      isPlayer1Ready()
+    ) {
+      gameStatusText = <b>Waiting for player 2 to start the game</b>;
+    } else if (
+      gameAreaController.player2?.userName === townController.ourPlayer.userName &&
+      isPlayer2Ready()
+    ) {
+      gameStatusText = <b>Waiting for player 1 to start the game</b>;
+    } else {
+      const startGameButton = (
+        <Button
+          onClick={async () => {
+            setJoiningGame(true);
+            try {
+              await gameAreaController.startGame();
+            } catch (err) {
+              toast({
+                title: 'Error starting game',
+                description: (err as Error).toString(),
+                status: 'error',
+              });
+            }
+            setJoiningGame(false);
+          }}
+          isLoading={joiningGame}
+          disabled={joiningGame}>
+          Start Two Player Game
+        </Button>
+      );
+      gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
+    }
+  } else if (
+    gameStatus == 'WAITING_FOR_PLAYERS' &&
+    gameAreaController.player1?.userName === townController.ourPlayer.userName
+  ) {
     const singleGameButton = (
       <Button
         onClick={async () => {
@@ -120,6 +155,7 @@ export default function EscapeRoomArea({
           try {
             await gameAreaController.singleGame();
             gameArea?.movePlayer(2065, 1800);
+            if (p1) p1.escapeRoom = true;
           } catch (err) {
             toast({
               title: 'Error starting game',
@@ -159,12 +195,35 @@ export default function EscapeRoomArea({
         Join New Game
       </Button>
     );
+    const description = (
+      <Button
+        onClick={async () => {
+          try {
+            toast({
+              title: 'EscapeRoom Objective',
+              description:
+                'Room 1: figure out the combination to unlock the lockbox and obtain the key to room 2 \nRoom 2: Find the key in a crevice in the maze, and go to room 3 \n Room3: Find the key using the hints',
+              status: 'info',
+            });
+          } catch (err) {
+            toast({
+              title: 'Error displaying description',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Objective
+      </Button>
+    );
     let gameStatusStr;
     if (gameStatus === 'OVER') gameStatusStr = 'over';
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
     gameStatusText = (
       <b>
-        Game {gameStatusStr}. {joinGameButton}
+        Game {gameStatusStr}. {joinGameButton}. {description}
       </b>
     );
   }

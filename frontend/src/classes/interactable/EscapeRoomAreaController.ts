@@ -100,7 +100,6 @@ export default class EscapeRoomAreaController extends GameAreaController<
    * Returns true if the game is not empty and the game is not waiting for players
    */
   public isActive(): boolean {
-    if (!this.isEmpty()) return true;
     if (this.player1 !== undefined) return this.player1?.escapeRoom;
     if (this.player2 !== undefined) return this.player2?.escapeRoom;
     return false;

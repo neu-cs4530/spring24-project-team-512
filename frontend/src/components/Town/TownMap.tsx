@@ -13,6 +13,7 @@ import useChatContext from '../VideoCall/VideoFrontend/hooks/useChatContext/useC
 import ChatWindow from '../VideoCall/VideoFrontend/components/ChatWindow/ChatWindow';
 import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import Instruction from '../SocialSidebar/Instruction';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,13 +78,14 @@ export default function TownMap(): JSX.Element {
     const unPauseListener = newGameScene.resume.bind(newGameScene);
     coveyTownController.addListener('pause', pauseListener);
     coveyTownController.addListener('unPause', unPauseListener);
+
     return () => {
       coveyTownController.removeListener('pause', pauseListener);
       coveyTownController.removeListener('unPause', unPauseListener);
       game.destroy(true);
     };
   }, [coveyTownController]);
-
+  
   return (
     <div id='app-container'>
       <NewConversationModal />
@@ -96,6 +98,7 @@ export default function TownMap(): JSX.Element {
 
       <div id='map-container' />
       <div id='social-container'>
+        <Instruction/>
         <SocialSidebar />
       </div>
     </div>

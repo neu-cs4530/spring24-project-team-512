@@ -73,6 +73,12 @@ export default class TownGameScene extends Phaser.Scene {
 
   private _onGameReadyListeners: Callback[] = [];
 
+  private _mDown?: Phaser.Input.Keyboard.Key;
+
+  private _fDown?: Phaser.Input.Keyboard.Key;
+
+  private _xDown?: Phaser.Input.Keyboard.Key;
+
   /**
    * Layers that the player can collide with.
    */
@@ -218,13 +224,11 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   inRoom1(): boolean {
-    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-
     const room1 = this.map.findObject(
       'Objects',
       obj => obj.name === 'Room1',
     ) as Phaser.Types.Tilemaps.TiledObject;
-    if (gameObjects && room1.x && room1.y && room1.height && room1.width) {
+    if (room1.x && room1.y && room1.height && room1.width) {
       if (
         this.coveyTownController.ourPlayer.location.x < room1.x + room1.width &&
         this.coveyTownController.ourPlayer.location.x > room1.x &&
@@ -239,13 +243,11 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   inRoom2(): boolean {
-    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-
     const room2 = this.map.findObject(
       'Objects',
       obj => obj.name === 'Room2',
     ) as Phaser.Types.Tilemaps.TiledObject;
-    if (gameObjects && room2.x && room2.y && room2.height && room2.width) {
+    if (room2.x && room2.y && room2.height && room2.width) {
       if (
         this.coveyTownController.ourPlayer.location.x < room2.x + room2.width &&
         this.coveyTownController.ourPlayer.location.x > room2.x &&
@@ -261,13 +263,11 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   inRoom3(): boolean {
-    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-
     const room3 = this.map.findObject(
       'Objects',
       obj => obj.name === 'Room3',
     ) as Phaser.Types.Tilemaps.TiledObject;
-    if (gameObjects && room3.x && room3.y && room3.height && room3.width) {
+    if (room3.x && room3.y && room3.height && room3.width) {
       if (
         this.coveyTownController.ourPlayer.location.x < room3.x + room3.width &&
         this.coveyTownController.ourPlayer.location.x > room3.x &&
@@ -320,15 +320,17 @@ export default class TownGameScene extends Phaser.Scene {
 
   moveOurPlayerTo(destination: Partial<PlayerLocation>) {
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-    const room1 = this.map.findObject(
-      'Objects',
-      obj => obj.name === 'Room1',
-    ) as Phaser.Types.Tilemaps.TiledObject;
-    if (gameObjects && room1.x && room1.y && room1.height && room1.width) {
+
+    if (gameObjects) {
       if (
-        this.inRoom1() &&
-        this.coveyTownController.ourPlayer.inventory.items.find(item => item.name === 'key') ===
-          undefined
+        (this.inRoom1() &&
+          this.coveyTownController.ourPlayer.inventory.items.find(
+            item => item.name === 'room 2 key',
+          ) === undefined) ||
+        (this.inRoom2() &&
+          this.coveyTownController.ourPlayer.inventory.items.find(
+            item => item.name === 'room 3 key',
+          ) === undefined)
       ) {
         return;
       }
@@ -365,7 +367,7 @@ export default class TownGameScene extends Phaser.Scene {
 
   update() {
     if (this._paused) {
-      if (this.cursorKeys.shift.isDown && this.coveyTownController.ourPlayer.escapeRoom) {
+      if (this._xDown?.isDown && this.inEscapeRoom()) {
         this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 3464, y: 800 });
       }
       this.moveAI();
@@ -387,16 +389,17 @@ export default class TownGameScene extends Phaser.Scene {
       }
       return;
     }
-    if (this.cursorKeys.shift.isDown && this.coveyTownController.ourPlayer.escapeRoom) {
+    //option to escape room
+    if (this._xDown?.isDown && this.inEscapeRoom()) {
       this._renderTexture?.clear();
       this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 3464, y: 800 });
     }
     this.moveAI();
-    if (this.inEscapeRoom()) {
-      this.coveyTownController.ourPlayer.escapeRoom = true;
-    } else {
-      this.coveyTownController.ourPlayer.escapeRoom = false;
-    }
+    // if (this.inEscapeRoom()) {
+    //   this.coveyTownController.ourPlayer.escapeRoom = true;
+    // } else {
+    //   this.coveyTownController.ourPlayer.escapeRoom = false;
+    // }
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     if (gameObjects && this._cursors) {
       const prevVelocity = gameObjects.sprite.body.velocity.clone();
@@ -417,84 +420,84 @@ export default class TownGameScene extends Phaser.Scene {
             'Objects',
             obj => obj.name === 'Room2',
           ) as Phaser.Types.Tilemaps.TiledObject;
-          const room3 = this.map.findObject(
+          const room3Key = this.map.findObject(
             'Objects',
-            obj => obj.name === 'Room3',
+            obj => obj.name === 'Room3Key',
           ) as Phaser.Types.Tilemaps.TiledObject;
-          if (
-            room2.x !== undefined &&
-            room2.y !== undefined &&
-            room2.width !== undefined &&
-            room2.height !== undefined
-          ) {
+
+          if (room3Key.x && room3Key.y && room3Key.height && room3Key.width) {
             if (
-              player.location.x < room2.x + room2.width &&
-              player.location.x > room2.x &&
-              player.location.y > room2.y &&
-              player.location.y < room2.y + room2.height
+              this.coveyTownController.ourPlayer.location.x < room3Key.x + room3Key.width &&
+              this.coveyTownController.ourPlayer.location.x > room3Key.x &&
+              this.coveyTownController.ourPlayer.location.y > room3Key.y &&
+              this.coveyTownController.ourPlayer.location.y < room3Key.y + room3Key.height
             ) {
-              this._aiCharacter?.setVisible(false);
-              // this.map.removeTileAt(player.location.x, player.location.y, true, true, 'Above Player');
+              this.coveyTownController.ourPlayer.placeItem({
+                name: 'room 3 key',
+                description: 'room 3 key',
+                tile: '',
+              });
+            }
+          }
+          if (room2.x && room2.y && this.inRoom2()) {
+            this._aiCharacter?.setVisible(false);
+            // this.map.removeTileAt(player.location.x, player.location.y, true, true, 'Above Player');
 
-              // this._collidingLayers[2].tileAt(player.location.x, player.location.y, null);
-              //  Clear the
-              this._renderTexture?.clear();
+            // this._collidingLayers[2].tileAt(player.location.x, player.location.y, null);
+            //  Clear the
+            this._renderTexture?.clear();
 
-              // //  Fill it in black
-              this._renderTexture?.fill(
-                0x000000,
-                1,
-                room2.x - cam.scrollX,
-                room2.y - cam.scrollY - 200,
-                this.scale.width,
-                this.scale.height + 1000,
+            // //  Fill it in black
+            this._renderTexture?.fill(
+              0x000000,
+              1,
+              room2.x - cam.scrollX,
+              room2.y - cam.scrollY - 200,
+              this.scale.width,
+              this.scale.height + 1000,
+            );
+            if (
+              player.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
+              this._mDown?.isDown
+            ) {
+              this.coveyTownController.ourPlayer.gameObjects?.sprite.setDisplaySize(10, 10);
+            }
+            if (this._mDown?.isUp) {
+              this.coveyTownController.ourPlayer.gameObjects?.sprite.setDisplaySize(40, 50);
+            }
+
+            // Clear the graphics object if needed
+            //  Erase the 'mask' texture from it based on the player position
+            //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
+            //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
+            if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
+              this._renderTexture?.erase(
+                'mask',
+                player.location.x - 80 - cam.scrollX,
+                player.location.y - 80 - cam.scrollY,
               );
-
-              // Clear the graphics object if needed
-              //  Erase the 'mask' texture from it based on the player position
-              //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
-              //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
-              if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
-                this._renderTexture?.erase(
-                  'mask',
-                  player.location.x - 80 - cam.scrollX,
-                  player.location.y - 80 - cam.scrollY,
-                );
-              }
-            }
-            if (
-              this._aiCharacter &&
-              Math.abs(player.location.y - this._aiCharacter.y) <= 80 &&
-              Math.abs(player.location.x - this._aiCharacter.x) <= 80
-            ) {
-              this._aiCharacter.setVisible(true);
-            }
-            if (
-              this._aiCharacter &&
-              Math.abs(player.location.x - this._aiCharacter.x) <= 5 &&
-              Math.abs(player.location.y - this._aiCharacter.y) <= 45
-            ) {
-              this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 2040, y: 1370 });
             }
           }
           if (
-            room3.x !== undefined &&
-            room3.y !== undefined &&
-            room3.width !== undefined &&
-            room3.height !== undefined
+            this._aiCharacter &&
+            Math.abs(player.location.y - this._aiCharacter.y) <= 80 &&
+            Math.abs(player.location.x - this._aiCharacter.x) <= 80
           ) {
-            if (
-              player.location.x < room3.x + room3.width &&
-              player.location.x > room3.x &&
-              player.location.y > room3.y &&
-              player.location.y < room3.y + room3.height
-            ) {
-              this._renderTexture?.clear();
-            }
+            this._aiCharacter.setVisible(true);
+          }
+          if (
+            this._aiCharacter &&
+            Math.abs(player.location.x - this._aiCharacter.x) <= 5 &&
+            Math.abs(player.location.y - this._aiCharacter.y) <= 45
+          ) {
+            this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 2040, y: 1370 });
+          }
+
+          if (this.inRoom3()) {
+            this._renderTexture?.clear();
           }
         }
         this.inRoomReturn();
-        console.log(this.coveyTownController.ourPlayer.escapeRoom);
       }
       const primaryDirection = this.getNewMovementDirection();
       switch (primaryDirection) {
@@ -644,6 +647,10 @@ export default class TownGameScene extends Phaser.Scene {
     worldLayer.setDepth(5);
     aboveLayer.setDepth(10);
     veryAboveLayer.setDepth(15);
+    //add M and F for flashlight and mushrooms
+    this._mDown = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+    this._fDown = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    this._xDown = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
     // Object layers in Tiled let you embed extra info into a map - like a spawn point or custom
     // collision shapes. In the tmx file, there's an object layer with a point named "Spawn Point"

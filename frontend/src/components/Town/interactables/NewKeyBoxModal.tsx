@@ -47,8 +47,13 @@ export default function NewKeyBoxModal(): JSX.Element {
     if (keyBoxDisplay) {
       if (topic === '240') {
         coveyTownController.ourPlayer.placeItem({
-          name: 'key',
+          name: 'room 2 key',
           description: 'key for room 2',
+          tile: '',
+        });
+        coveyTownController.ourPlayer.placeItem({
+          name: 'mushrooms',
+          description: 'mushrooms',
           tile: '',
         });
         coveyTownController.ourPlayer.placeItem({
@@ -129,7 +134,7 @@ export default function NewKeyBoxModal(): JSX.Element {
               <FormLabel htmlFor='topic'>Combination</FormLabel>
               <Input
                 id='topic'
-                placeholder='Enter the correct combination'
+                placeholder='Enter the correct 3 digit combination'
                 name='topic'
                 value={topic}
                 onChange={e => setTopic(e.target.value)}
