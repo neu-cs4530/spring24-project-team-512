@@ -54,6 +54,18 @@ export default function EscapeRoomArea({
 
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
+  const isPlayer1Ready = () => {
+    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+    return gameState?.player1Ready;
+  };
+
+  const isPlayer2Ready = () => {
+    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+    return gameState?.player2Ready;
+  };
+
+  const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
+
   useEffect(() => {
     console.log(townController.ourPlayer);
     const updateGameState = () => {
@@ -90,18 +102,6 @@ export default function EscapeRoomArea({
       gameAreaController.removeListener('gameUpdated', updateGameState);
     };
   }, [townController, gameAreaController, toast]);
-
-  const isPlayer1Ready = () => {
-    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
-    return gameState?.player1Ready;
-  };
-
-  const isPlayer2Ready = () => {
-    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
-    return gameState?.player2Ready;
-  };
-
-  const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
 
   const inGame = gameAreaController.occupants.filter(player => player.escapeRoom === true);
   let gameStatusText = <></>;
