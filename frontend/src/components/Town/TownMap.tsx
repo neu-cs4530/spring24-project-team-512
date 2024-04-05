@@ -85,7 +85,7 @@ export default function TownMap(): JSX.Element {
       game.destroy(true);
     };
   }, [coveyTownController]);
-  
+
   return (
     <div id='app-container'>
       <NewConversationModal />
@@ -98,7 +98,7 @@ export default function TownMap(): JSX.Element {
 
       <div id='map-container' />
       <div id='social-container'>
-        <Instruction/>
+        <Instruction />
         <SocialSidebar />
       </div>
     </div>

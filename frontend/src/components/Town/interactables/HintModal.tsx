@@ -131,11 +131,8 @@ export default function NewHintModal(): JSX.Element {
       <ModalContent>
         <ModalHeader>Hint</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          {displayHint()}
-        </ModalBody>
-        <ModalFooter>
-        </ModalFooter>
+        <ModalBody>{displayHint()}</ModalBody>
+        <ModalFooter></ModalFooter>
       </ModalContent>
     </Modal>
   );
