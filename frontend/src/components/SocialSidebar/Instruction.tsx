@@ -23,13 +23,9 @@ export default function Instruction(): JSX.Element {
         Game Instruction
       </Heading>
       <UnorderedList>
-        <ListItem>
-          - Use Arrow keys to move
-        </ListItem>
+        <ListItem>- Use Arrow keys to move</ListItem>
         {/* {inEscapeRoom ? ( */}
-          <ListItem>
-            - Press space bar to interact or to view hint
-          </ListItem>
+        <ListItem>- Press space bar to interact or to view hint</ListItem>
         {/* ) : ""} */}
       </UnorderedList>
     </VStack>

@@ -224,13 +224,11 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   inRoom1(): boolean {
-    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-
     const room1 = this.map.findObject(
       'Objects',
       obj => obj.name === 'Room1',
     ) as Phaser.Types.Tilemaps.TiledObject;
-    if (gameObjects && room1.x && room1.y && room1.height && room1.width) {
+    if (room1.x && room1.y && room1.height && room1.width) {
       if (
         this.coveyTownController.ourPlayer.location.x < room1.x + room1.width &&
         this.coveyTownController.ourPlayer.location.x > room1.x &&
@@ -245,13 +243,11 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   inRoom2(): boolean {
-    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-
     const room2 = this.map.findObject(
       'Objects',
       obj => obj.name === 'Room2',
     ) as Phaser.Types.Tilemaps.TiledObject;
-    if (gameObjects && room2.x && room2.y && room2.height && room2.width) {
+    if (room2.x && room2.y && room2.height && room2.width) {
       if (
         this.coveyTownController.ourPlayer.location.x < room2.x + room2.width &&
         this.coveyTownController.ourPlayer.location.x > room2.x &&
@@ -267,13 +263,11 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   inRoom3(): boolean {
-    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-
     const room3 = this.map.findObject(
       'Objects',
       obj => obj.name === 'Room3',
     ) as Phaser.Types.Tilemaps.TiledObject;
-    if (gameObjects && room3.x && room3.y && room3.height && room3.width) {
+    if (room3.x && room3.y && room3.height && room3.width) {
       if (
         this.coveyTownController.ourPlayer.location.x < room3.x + room3.width &&
         this.coveyTownController.ourPlayer.location.x > room3.x &&
@@ -400,7 +394,6 @@ export default class TownGameScene extends Phaser.Scene {
       this._renderTexture?.clear();
       this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 3464, y: 800 });
     }
-
     this.moveAI();
     // if (this.inEscapeRoom()) {
     //   this.coveyTownController.ourPlayer.escapeRoom = true;
@@ -477,10 +470,7 @@ export default class TownGameScene extends Phaser.Scene {
             //  Erase the 'mask' texture from it based on the player position
             //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
             //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
-            if (
-              player.inventory.items.find(item => item.name === 'flashlight') !== undefined &&
-              this._fDown?.isDown
-            ) {
+            if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
               this._renderTexture?.erase(
                 'mask',
                 player.location.x - 80 - cam.scrollX,
