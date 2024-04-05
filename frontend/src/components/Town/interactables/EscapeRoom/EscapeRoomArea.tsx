@@ -54,17 +54,17 @@ export default function EscapeRoomArea({
 
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
-  const isPlayer1Ready = () => {
-    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
-    return gameState?.player1Ready;
-  };
+  // const isPlayer1Ready = () => {
+  //   const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+  //   return gameState?.player1Ready;
+  // };
 
-  const isPlayer2Ready = () => {
-    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
-    return gameState?.player2Ready;
-  };
+  // const isPlayer2Ready = () => {
+  //   const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+  //   return gameState?.player2Ready;
+  // };
 
-  const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
+  // const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
 
   useEffect(() => {
     console.log(townController.ourPlayer);
@@ -74,9 +74,6 @@ export default function EscapeRoomArea({
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
       setPlayer2(gameAreaController.player2);
-      if (areBothPlayerReady()) {
-        gameArea?.movePlayer(2065, 1800);
-      }
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     const onGameEnd = () => {
@@ -111,39 +108,39 @@ export default function EscapeRoomArea({
     gameArea?.movePlayer(2065, 1800);
     // }
   } else if (gameStatus == 'WAITING_TO_START') {
-    if (
-      gameAreaController.player1?.userName === townController.ourPlayer.userName &&
-      isPlayer1Ready()
-    ) {
-      gameStatusText = <b>Waiting for player 2 to start the game</b>;
-    } else if (
-      gameAreaController.player2?.userName === townController.ourPlayer.userName &&
-      isPlayer2Ready()
-    ) {
-      gameStatusText = <b>Waiting for player 1 to start the game</b>;
-    } else {
-      const startGameButton = (
-        <Button
-          onClick={async () => {
-            setJoiningGame(true);
-            try {
-              await gameAreaController.startGame();
-            } catch (err) {
-              toast({
-                title: 'Error starting game',
-                description: (err as Error).toString(),
-                status: 'error',
-              });
-            }
-            setJoiningGame(false);
-          }}
-          isLoading={joiningGame}
-          disabled={joiningGame}>
-          Start Two Player Game
-        </Button>
-      );
-      gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
-    }
+    // if (
+    //   gameAreaController.player1?.userName === townController.ourPlayer.userName &&
+    //   isPlayer1Ready()
+    // ) {
+    //   gameStatusText = <b>Waiting for player 2 to start the game</b>;
+    // } else if (
+    //   gameAreaController.player2?.userName === townController.ourPlayer.userName &&
+    //   isPlayer2Ready()
+    // ) {
+    //   gameStatusText = <b>Waiting for player 1 to start the game</b>;
+    // } else {
+    const startGameButton = (
+      <Button
+        onClick={async () => {
+          setJoiningGame(true);
+          try {
+            await gameAreaController.startGame();
+          } catch (err) {
+            toast({
+              title: 'Error starting game',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+          setJoiningGame(false);
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Start Two Player Game
+      </Button>
+    );
+    gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
+    // }
   } else if (
     gameStatus == 'WAITING_FOR_PLAYERS' &&
     gameAreaController.player1?.userName === townController.ourPlayer.userName
@@ -154,7 +151,12 @@ export default function EscapeRoomArea({
           setJoiningGame(true);
           try {
             await gameAreaController.singleGame();
-            gameArea?.movePlayer(2065, 1800);
+            if (
+              gameAreaController.toInteractableAreaModel().game?.state.player1Ready &&
+              gameAreaController.toInteractableAreaModel().game?.state.player2Ready
+            ) {
+              gameArea?.movePlayer(2065, 1800);
+            }
             if (p1) p1.escapeRoom = true;
           } catch (err) {
             toast({
