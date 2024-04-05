@@ -134,7 +134,7 @@ export default function NewKeyBoxModal(): JSX.Element {
               <FormLabel htmlFor='topic'>Combination</FormLabel>
               <Input
                 id='topic'
-                placeholder='Enter the correct combination'
+                placeholder='Enter the correct 3 digit combination'
                 name='topic'
                 value={topic}
                 onChange={e => setTopic(e.target.value)}

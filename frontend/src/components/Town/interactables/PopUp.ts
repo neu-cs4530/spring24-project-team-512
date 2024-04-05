@@ -23,7 +23,7 @@ export default class PopUpArea extends Interactable {
     let message = '';
     if (this.name === 'riddle displayer') {
       message =
-        'In halls of history, where relics sleep, \n Beneath glass cases, secrets keep. \n Legs of creatures, ancient and grand,  \n In fossils and bones, they silently stand.';
+        'In halls of history, where relics sleep, \n Beneath glass cases, secrets keep. \n Legs of creatures, ancient and grand,  \n In fossils and bones, they silently stand. \n\n Press spacebar for a hint!';
     }
     if (this.name === 'Room3Key') {
       message = 'You found the room 3 key!';

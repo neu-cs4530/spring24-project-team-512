@@ -1,6 +1,7 @@
 import {
   Button,
   Modal,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
@@ -47,10 +48,10 @@ export default function NewHintModal(): JSX.Element {
       return 'Count the legs';
     }
     if (room === 2) {
-      return 'exit is near the top of the screen';
+      return 'Exit is near the top of the screen';
     }
     if (room === 3) {
-      return 'dig up grave 2';
+      return 'Dig up grave 2';
     }
   }
 
@@ -128,16 +129,13 @@ export default function NewHintModal(): JSX.Element {
       }}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader> {displayHint()} </ModalHeader>
+        <ModalHeader>Hint</ModalHeader>
         <ModalCloseButton />
-        <form
-          onSubmit={ev => {
-            ev.preventDefault();
-          }}>
-          <ModalFooter>
-            <Button onClick={closeModal}>Cancel</Button>
-          </ModalFooter>
-        </form>
+        <ModalBody>
+          {displayHint()}
+        </ModalBody>
+        <ModalFooter>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

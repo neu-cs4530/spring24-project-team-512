@@ -55,11 +55,16 @@ export default function EscapeRoomArea({
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
   useEffect(() => {
+    console.log(townController.ourPlayer);
     const updateGameState = () => {
+      console.log(gameAreaController)
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
       setPlayer2(gameAreaController.player2);
+      if(areBothPlayerReady()) {
+        gameArea?.movePlayer(2065, 1800);
+      }
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     const onGameEnd = () => {
@@ -86,18 +91,41 @@ export default function EscapeRoomArea({
     };
   }, [townController, gameAreaController, toast]);
 
+  const isPlayer1Ready = () => {
+    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+    return gameState?.player1Ready;
+  }
+
+  const isPlayer2Ready = () => {
+    const gameState = gameAreaController.toInteractableAreaModel().game?.state;
+    return gameState?.player2Ready;
+  }
+
+  const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
+
   const inGame = gameAreaController.occupants.filter(player => player.escapeRoom === true);
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS' && inGame.length > 0) {
     gameStatusText = <>Game in progress, current time: {time}</>;
+    // if(areBothPlayerReady()) {
+      gameArea?.movePlayer(2065, 1800);
+    // }
   } else if (gameStatus == 'WAITING_TO_START') {
-    const startGameButton = (
+    if((gameAreaController.player1?.userName === townController.ourPlayer.userName) && isPlayer1Ready()) {
+      gameStatusText = (
+        <b>Waiting for player 2 to start the game</b>
+      );
+    } else if((gameAreaController.player2?.userName === townController.ourPlayer.userName) && isPlayer2Ready()) {
+      gameStatusText = (
+        <b>Waiting for player 1 to start the game</b>
+      );
+    } else {
+      const startGameButton = (
       <Button
         onClick={async () => {
           setJoiningGame(true);
           try {
             await gameAreaController.startGame();
-            gameArea?.movePlayer(2065, 1800);
           } catch (err) {
             toast({
               title: 'Error starting game',
@@ -109,11 +137,12 @@ export default function EscapeRoomArea({
         }}
         isLoading={joiningGame}
         disabled={joiningGame}>
-        Two Player
+        Start Two Player Game
       </Button>
     );
-    gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
-  } else if (gameStatus == 'WAITING_FOR_PLAYERS' && gameAreaController.player1) {
+      gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
+    }
+  } else if (gameStatus == 'WAITING_FOR_PLAYERS' && gameAreaController.player1?.userName === townController.ourPlayer.userName) {
     const singleGameButton = (
       <Button
         onClick={async () => {
@@ -139,6 +168,8 @@ export default function EscapeRoomArea({
     gameStatusText = (
       <b>Press to play single player, or wait for one more player. {singleGameButton}</b>
     );
+    
+    
   } else {
     const joinGameButton = (
       <Button
