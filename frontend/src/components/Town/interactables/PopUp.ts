@@ -1,6 +1,5 @@
 import { BoundingBox } from '../../../types/CoveyTownSocket';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
-
 export default class PopUpArea extends Interactable {
   private _infoTextBox?: Phaser.GameObjects.Text;
 
@@ -25,6 +24,9 @@ export default class PopUpArea extends Interactable {
     if (this.name === 'riddle displayer') {
       message =
         'In halls of history, where relics sleep, \n Beneath glass cases, secrets keep. \n Legs of creatures, ancient and grand,  \n In fossils and bones, they silently stand.';
+    }
+    if (this.name === 'Room3Key') {
+      message = 'You found the room 3 key!';
     }
     if (!this._infoTextBox) {
       this._infoTextBox = this.scene.add

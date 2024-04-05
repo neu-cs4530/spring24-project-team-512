@@ -78,6 +78,7 @@ export default function EscapeRoomArea({
         });
       }
     };
+
     gameAreaController.addListener('gameEnd', onGameEnd);
     return () => {
       gameAreaController.removeListener('gameEnd', onGameEnd);
@@ -120,6 +121,7 @@ export default function EscapeRoomArea({
           try {
             await gameAreaController.singleGame();
             gameArea?.movePlayer(2065, 1800);
+            if (p1) p1.escapeRoom = true;
           } catch (err) {
             toast({
               title: 'Error starting game',
@@ -159,12 +161,35 @@ export default function EscapeRoomArea({
         Join New Game
       </Button>
     );
+    const description = (
+      <Button
+        onClick={async () => {
+          try {
+            toast({
+              title: 'EscapeRoom Objective',
+              description:
+                'Room 1: figure out the combination to unlock the lockbox and obtain the key to room 2 \nRoom 2: Find the key in a crevice in the maze, and go to room 3 \n Room3: Find the key using the hints',
+              status: 'info',
+            });
+          } catch (err) {
+            toast({
+              title: 'Error displaying description',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Objective
+      </Button>
+    );
     let gameStatusStr;
     if (gameStatus === 'OVER') gameStatusStr = 'over';
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
     gameStatusText = (
       <b>
-        Game {gameStatusStr}. {joinGameButton}
+        Game {gameStatusStr}. {joinGameButton}. {description}
       </b>
     );
   }

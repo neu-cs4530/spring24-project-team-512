@@ -47,8 +47,13 @@ export default function NewKeyBoxModal(): JSX.Element {
     if (keyBoxDisplay) {
       if (topic === '240') {
         coveyTownController.ourPlayer.placeItem({
-          name: 'key',
+          name: 'room 2 key',
           description: 'key for room 2',
+          tile: '',
+        });
+        coveyTownController.ourPlayer.placeItem({
+          name: 'mushrooms',
+          description: 'mushrooms',
           tile: '',
         });
         coveyTownController.ourPlayer.placeItem({

@@ -2,7 +2,7 @@ import Interactable, { KnownInteractableTypes } from '../Interactable';
 export default class HintArea extends Interactable {
   addedToScene(): void {
     super.addedToScene();
-    this.setTintFill();
+    this.setTintFill(0, 0, 0, 0);
     this.setAlpha(0.3);
   }
 
@@ -22,20 +22,4 @@ export default class HintArea extends Interactable {
     }
     return 0;
   }
-  //   placeItem(item: Item, playerID: PlayerID): void {
-  //     if (
-  //       this.townController.getGameAreaController(this).toInteractableAreaModel().type ===
-  //       'EscapeRoomArea'
-  //     ) {
-  //       try {
-  //         this.townController.getGameAreaController(this).placeItem(item, playerID);
-  //       } catch (error) {
-  //         throw Error('Not escape room area');
-  //       }
-  //     }
-  //   }
-
-  //   overlapExit(): void {
-  //     this._infoTextBox?.setVisible(false);
-  //   }
 }
