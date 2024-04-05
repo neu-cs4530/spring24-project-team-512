@@ -124,6 +124,7 @@ export default function EscapeRoomArea({
         onClick={async () => {
           setJoiningGame(true);
           try {
+            gameArea?.movePlayer(2065, 1800);
             await gameAreaController.startGame();
           } catch (err) {
             toast({
