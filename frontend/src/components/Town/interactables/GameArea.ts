@@ -31,6 +31,10 @@ export default class GameArea extends Interactable {
     this._scene.moveOurPlayerTo({ x: x1, y: y1 });
   }
 
+  escapeRoomStart(x1: number, y1: number): void {
+    this._scene.escapeRoomStart({ x: x1, y: y1 });
+  }
+
   interact(): void {
     this._isInteracting = true;
   }

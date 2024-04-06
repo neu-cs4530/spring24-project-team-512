@@ -365,6 +365,47 @@ export default class TownGameScene extends Phaser.Scene {
     this.coveyTownController.emitMovement(this._lastLocation);
   }
 
+  escapeRoomStart(destination: Partial<PlayerLocation>) {
+    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
+    for (const player of this._players) {
+      if (gameObjects) {
+        if (
+          (this.inRoom1() &&
+            this.coveyTownController.ourPlayer.inventory.items.find(
+              item => item.name === 'room 2 key',
+            ) === undefined) ||
+          (this.inRoom2() &&
+            this.coveyTownController.ourPlayer.inventory.items.find(
+              item => item.name === 'room 3 key',
+            ) === undefined)
+        ) {
+          return;
+        }
+      }
+      // if (
+      //   player.location.x < room2.x + room2.width &&
+      //   player.location.x > room2.x &&
+      //   player.location.y > room2.y &&
+      //   player.location.y < room2.y + room2.height
+      // ) {
+
+      if (!gameObjects) {
+        throw new Error('Unable to move player without game objects created first');
+      }
+      // if (!this._lastLocation) {
+      //   this._lastLocation = { moving: false, rotation: 'front', x: 0, y: 0 };
+      // }
+      if (player.escapeRoom) {
+        if (destination.x !== undefined && destination.y !== undefined) {
+          // gameObjects.sprite.x = destination.x;
+
+          player.location.x = destination.x;
+          player.location.y = destination.y;
+        }
+      }
+    }
+  }
+
   update() {
     if (this._paused) {
       if (this._xDown?.isDown && this.inEscapeRoom()) {

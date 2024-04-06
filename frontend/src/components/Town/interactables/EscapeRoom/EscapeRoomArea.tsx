@@ -124,7 +124,7 @@ export default function EscapeRoomArea({
         onClick={async () => {
           setJoiningGame(true);
           try {
-            gameArea?.movePlayer(2065, 1800);
+            gameArea?.escapeRoomStart(2065, 1800);
             await gameAreaController.startGame();
           } catch (err) {
             toast({
@@ -159,6 +159,7 @@ export default function EscapeRoomArea({
               gameArea?.movePlayer(2065, 1800);
             }
             if (p1) p1.escapeRoom = true;
+            if (p1 && p1.escapeRoom && p2) p2.escapeRoom = true;
           } catch (err) {
             toast({
               title: 'Error starting game',
@@ -179,6 +180,7 @@ export default function EscapeRoomArea({
           setJoiningGame(true);
           try {
             if (p1) p1.escapeRoom = true;
+            if (p1 && p1.escapeRoom && p2) p2.escapeRoom = true;
             await gameAreaController.joinGame();
           } catch (err) {
             toast({
@@ -207,6 +209,7 @@ export default function EscapeRoomArea({
           setJoiningGame(true);
           try {
             if (p1) p1.escapeRoom = true;
+            if (p1 && p1.escapeRoom && p2) p2.escapeRoom = true;
             await gameAreaController.joinGame();
           } catch (err) {
             toast({

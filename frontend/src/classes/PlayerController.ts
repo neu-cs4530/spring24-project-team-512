@@ -25,8 +25,6 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private _inventory: Inventory;
 
-  public _renderTexture?: Phaser.GameObjects.RenderTexture;
-
   public gameObjects?: PlayerGameObjects;
 
   constructor(id: string, userName: string, location: PlayerLocation) {
