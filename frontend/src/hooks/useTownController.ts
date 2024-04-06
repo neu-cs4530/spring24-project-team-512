@@ -13,3 +13,7 @@ export default function useTownController(): TownController {
   assert(ctx, 'TownController context should be defined in order to use this hook.');
   return ctx;
 }
+
+export function usePlayerController() {
+  throw new Error('Function not implemented.');
+}
