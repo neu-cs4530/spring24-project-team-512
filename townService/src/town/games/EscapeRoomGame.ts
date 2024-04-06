@@ -97,7 +97,6 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
     if (this.state.player1 === player.id || this.state.player2 === player.id) {
       throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     }
-    player.escapeRoom = true;
     if (!this.state.player1) {
       this.state = {
         ...this.state,
