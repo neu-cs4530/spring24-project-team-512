@@ -141,6 +141,7 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
           player1: undefined,
           player1Ready: false,
         };
+        return 'Player1';
       }
       if (this.state.player2 === playerID) {
         this.state = {
@@ -148,9 +149,9 @@ export default class EscapeRoomGame extends Game<EscapeRoomGameState, EscapeRoom
           player2: undefined,
           player2Ready: false,
         };
-      } else {
-        throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
+        return 'Player2';
       }
+      throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     };
     removePlayer(player.id);
     switch (this.state.status) {

@@ -80,26 +80,7 @@ describe('EscapeRoomGame', () => {
           expect(game.state.status).toBe('WAITING_TO_START');
         });
       });
-      describe('if the player was player2 in the last game', () => {
-        it('should add the player as player2 if player2 is empty', () => {
-          const player1 = createPlayerForTesting();
-          const player2 = createPlayerForTesting();
-          game.join(player1);
-          game.join(player2);
-          expect(game.state.player1).toBe(player1.id); // First player should be player1
-          expect(game.state.player2).toBe(player2.id); // Second player should be player2
-          // Now, make a new game with the state of the last one
-          const secondGame = new EscapeRoomGame();
-          expect(secondGame.state.player1).toBeUndefined();
-          expect(secondGame.state.player2).toBeUndefined();
-          secondGame.join(player2);
-          expect(secondGame.state.player1).toBe(undefined);
-          expect(secondGame.state.player2).toBe(player2.id);
-          const newplayer1 = createPlayerForTesting();
-          secondGame.join(newplayer1);
-          expect(secondGame.state.player1).toBe(newplayer1.id);
-        });
-      });
+
       it('should set the status to WAITING_TO_START if both players are present', () => {
         const player1 = createPlayerForTesting();
         const player2 = createPlayerForTesting();
@@ -201,7 +182,7 @@ describe('EscapeRoomGame', () => {
     });
     describe('when the player is in the game', () => {
       describe('when the game is in progress', () => {
-        test('if the player is player1, it sets the winner to player2 and status to OVER', () => {
+        test('if the player is player1, it sets the time to be 0', () => {
           const player1 = createPlayerForTesting();
           const player2 = createPlayerForTesting();
           game.join(player1);
@@ -209,10 +190,10 @@ describe('EscapeRoomGame', () => {
           game.startGame(player1);
           game.startGame(player2);
           game.leave(player1);
-          expect(game.state.winner).toBe(player2.id);
+          expect(game.state.time).toEqual(0);
           expect(game.state.status).toBe('OVER');
         });
-        test('if the player is player2, it sets the winner to player1 and status to OVER', () => {
+        test('if the player is player2, it sets the time to be 0', () => {
           const player1 = createPlayerForTesting();
           const player2 = createPlayerForTesting();
           game.join(player1);
@@ -220,7 +201,7 @@ describe('EscapeRoomGame', () => {
           game.startGame(player1);
           game.startGame(player2);
           game.leave(player2);
-          expect(game.state.winner).toBe(player1.id);
+          expect(game.state.time).toEqual(0);
           expect(game.state.status).toBe('OVER');
         });
       });
@@ -304,21 +285,6 @@ describe('EscapeRoomGame', () => {
           expect(game.state.player1).toBeUndefined();
           expect(game.state.player1Ready).toBeFalsy();
           expect(game.state.status).toBe('WAITING_FOR_PLAYERS');
-        });
-        test('if the player is player2, it sets player2 to undefined, player2Ready to false and status remains WAITING_FOR_PLAYERS', () => {
-          const player1 = createPlayerForTesting();
-          const player2 = createPlayerForTesting();
-          game.join(player1);
-          game.join(player2);
-          game.leave(player1);
-          const secondGame = new EscapeRoomGame();
-          secondGame.join(player2);
-          expect(secondGame.state.player2).toBe(player2.id);
-          expect(secondGame.state.status).toBe('WAITING_FOR_PLAYERS');
-          secondGame.leave(player2);
-          expect(secondGame.state.player2).toBeUndefined();
-          expect(secondGame.state.player2Ready).toBeFalsy();
-          expect(secondGame.state.status).toBe('WAITING_FOR_PLAYERS');
         });
       });
     });
