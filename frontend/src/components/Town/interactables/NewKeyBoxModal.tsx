@@ -13,8 +13,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useInteractable } from '../../../classes/TownController';
+import {
+  useActiveInteractableAreas,
+  useInteractable,
+  useInteractableAreaController,
+} from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
+import EscapeRoomAreaController from '../../../classes/interactable/EscapeRoomAreaController';
 
 export default function NewKeyBoxModal(): JSX.Element {
   const coveyTownController = useTownController();

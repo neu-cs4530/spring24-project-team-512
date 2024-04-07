@@ -78,13 +78,13 @@ export default class EscapeRoomAreaController extends GameAreaController<
   public placeItem(id: PlayerID, item: Item) {
     if (id === this.player1?.id) {
       if (this.player1.id === this._townController.ourPlayer.id) {
-        this._townController.ourPlayer.inventory.items.push(item);
+        this.player1.inventory.items.push(item);
         this.emit('inventoryUpdated', this.player1.inventory.items);
       }
       this._model.game?.state.player1Inventory?.items.push(item);
     } else if (id === this.player2?.id) {
       if (this.player2.id === this._townController.ourPlayer.id) {
-        this._townController.ourPlayer.inventory.items.push(item);
+        this.player2.inventory.items.push(item);
         this.emit('inventoryUpdated', this.player2.inventory.items);
       }
       this._model.game?.state.player2Inventory?.items.push(item);

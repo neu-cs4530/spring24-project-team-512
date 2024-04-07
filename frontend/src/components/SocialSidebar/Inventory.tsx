@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { usePlayers } from '../../classes/TownController';
 import useTownController from '../../hooks/useTownController';
 import PlayerName from './PlayerName';
-import { Item } from '../../types/CoveyTownSocket';
+import { Inventory, Item } from '../../types/CoveyTownSocket';
 
 /**
  * Lists the current players in the town, along with the current town's name and ID
@@ -11,25 +11,25 @@ import { Item } from '../../types/CoveyTownSocket';
  * See relevant hooks: `usePlayersInTown` and `useCoveyAppState`
  *
  */
-export default function Inventory(): JSX.Element {
+export default function InventoryDisplay(): JSX.Element {
   //   const players = usePlayers();
   const townController = useTownController();
 
   const player = townController.ourPlayer;
-  /*
-  const [inventory, setInventory] = useState<Item[] | undefined>(player.inventory.items);
+
+  const [inventory, setInventory] = useState<Inventory>(player.inventory);
 
   useEffect(() => {
     const updateInventory = () => {
-      setInventory(player.inventory.items);
+      setInventory(player.inventory);
     };
-    townController.addListener('inventoryUpdated', updateInventory);
+    player.addListener('inventoryUpdated', updateInventory);
 
     return () => {
-      townController.removeListener('inventoryUpdated', updateInventory);
+      player.removeListener('inventoryUpdated', updateInventory);
     };
-  }, [townController, player.inventory.items]);
-*/
+  }, [townController, player]);
+
   //   const sorted = players.concat([]);
   //   sorted.sort((p1, p2) =>
   //     p1.userName.localeCompare(p2.userName, undefined, { numeric: true, sensitivity: 'base' }),
@@ -49,7 +49,7 @@ export default function Inventory(): JSX.Element {
           Player Inventory:
         </Heading>
         <OrderedList>
-          {player.inventory?.items.map(item => (
+          {inventory.items.map(item => (
             <ListItem key={item.name}>{item.description}</ListItem>
           ))}
         </OrderedList>

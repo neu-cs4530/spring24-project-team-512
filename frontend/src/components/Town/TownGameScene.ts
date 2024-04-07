@@ -321,7 +321,6 @@ export default class TownGameScene extends Phaser.Scene {
 
   moveOurPlayerTo(destination: Partial<PlayerLocation>, override?: boolean) {
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
-
     if (gameObjects) {
       if (
         (this.inRoom1() &&
