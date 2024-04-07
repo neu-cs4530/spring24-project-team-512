@@ -14,6 +14,7 @@ import ChatWindow from '../VideoCall/VideoFrontend/components/ChatWindow/ChatWin
 import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import Instruction from '../SocialSidebar/Instruction';
+import Inventory from '../SocialSidebar/Inventory';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,7 +86,7 @@ export default function TownMap(): JSX.Element {
       game.destroy(true);
     };
   }, [coveyTownController]);
-  
+
   return (
     <div id='app-container'>
       <NewConversationModal />
@@ -98,7 +99,8 @@ export default function TownMap(): JSX.Element {
 
       <div id='map-container' />
       <div id='social-container'>
-        <Instruction/>
+        <Instruction />
+        <Inventory />
         <SocialSidebar />
       </div>
     </div>

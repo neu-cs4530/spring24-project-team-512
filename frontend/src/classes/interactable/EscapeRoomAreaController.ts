@@ -49,8 +49,8 @@ export default class EscapeRoomAreaController extends GameAreaController<
     return status;
   }
 
-  get completed(): boolean {
-    return false;
+  get completed(): boolean | undefined {
+    return this.player1?.completed || this.player2?.completed;
   }
 
   public async startGame(): Promise<void> {
@@ -77,8 +77,16 @@ export default class EscapeRoomAreaController extends GameAreaController<
 
   public placeItem(id: PlayerID, item: Item) {
     if (id === this.player1?.id) {
+      if (this.player1.id === this._townController.ourPlayer.id) {
+        this._townController.ourPlayer.inventory.items.push(item);
+        this.emit('inventoryUpdated', this.player1.inventory.items);
+      }
       this._model.game?.state.player1Inventory?.items.push(item);
     } else if (id === this.player2?.id) {
+      if (this.player2.id === this._townController.ourPlayer.id) {
+        this._townController.ourPlayer.inventory.items.push(item);
+        this.emit('inventoryUpdated', this.player2.inventory.items);
+      }
       this._model.game?.state.player2Inventory?.items.push(item);
     } else {
       throw new Error(PLAYER_NOT_IN_GAME_ERROR);
@@ -100,8 +108,6 @@ export default class EscapeRoomAreaController extends GameAreaController<
    * Returns true if the game is not empty and the game is not waiting for players
    */
   public isActive(): boolean {
-    if (this.player1 !== undefined) return this.player1?.escapeRoom;
-    if (this.player2 !== undefined) return this.player2?.escapeRoom;
-    return false;
+    return !this.isEmpty() || this.status !== 'WAITING_FOR_PLAYERS';
   }
 }

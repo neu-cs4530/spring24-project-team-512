@@ -295,6 +295,7 @@ export default class TownGameScene extends Phaser.Scene {
         this.coveyTownController.ourPlayer.location.y > roomReturn.y &&
         this.coveyTownController.ourPlayer.location.y < roomReturn.y + roomReturn.height
       ) {
+        this.coveyTownController.ourPlayer.inventory.items = [];
         this.coveyTownController.ourPlayer.escapeRoom = false;
       }
     }
@@ -318,7 +319,7 @@ export default class TownGameScene extends Phaser.Scene {
     return this.inRoom1() || this.inRoom2() || this.inRoom3();
   }
 
-  moveOurPlayerTo(destination: Partial<PlayerLocation>) {
+  moveOurPlayerTo(destination: Partial<PlayerLocation>, override?: boolean) {
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
 
     if (gameObjects) {
@@ -326,11 +327,13 @@ export default class TownGameScene extends Phaser.Scene {
         (this.inRoom1() &&
           this.coveyTownController.ourPlayer.inventory.items.find(
             item => item.name === 'room 2 key',
-          ) === undefined) ||
+          ) === undefined &&
+          override === undefined) ||
         (this.inRoom2() &&
           this.coveyTownController.ourPlayer.inventory.items.find(
             item => item.name === 'room 3 key',
-          ) === undefined)
+          ) === undefined &&
+          override === undefined)
       ) {
         return;
       }
@@ -366,32 +369,7 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   escapeRoomStart(destination: Partial<PlayerLocation>) {
-    const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     for (const player of this._players) {
-      if (gameObjects) {
-        if (
-          (this.inRoom1() &&
-            this.coveyTownController.ourPlayer.inventory.items.find(
-              item => item.name === 'room 2 key',
-            ) === undefined) ||
-          (this.inRoom2() &&
-            this.coveyTownController.ourPlayer.inventory.items.find(
-              item => item.name === 'room 3 key',
-            ) === undefined)
-        ) {
-          return;
-        }
-      }
-      // if (
-      //   player.location.x < room2.x + room2.width &&
-      //   player.location.x > room2.x &&
-      //   player.location.y > room2.y &&
-      //   player.location.y < room2.y + room2.height
-      // ) {
-
-      if (!gameObjects) {
-        throw new Error('Unable to move player without game objects created first');
-      }
       // if (!this._lastLocation) {
       //   this._lastLocation = { moving: false, rotation: 'front', x: 0, y: 0 };
       // }
@@ -430,17 +408,9 @@ export default class TownGameScene extends Phaser.Scene {
       }
       return;
     }
-    //option to escape room
-    if (this._xDown?.isDown && this.inEscapeRoom()) {
-      this._renderTexture?.clear();
-      this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 3464, y: 800 });
-    }
+
+    //moves the opponent around room 2
     this.moveAI();
-    // if (this.inEscapeRoom()) {
-    //   this.coveyTownController.ourPlayer.escapeRoom = true;
-    // } else {
-    //   this.coveyTownController.ourPlayer.escapeRoom = false;
-    // }
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     if (gameObjects && this._cursors) {
       const prevVelocity = gameObjects.sprite.body.velocity.clone();
@@ -449,6 +419,11 @@ export default class TownGameScene extends Phaser.Scene {
       // Stop any previous movement from the last frame
       body.setVelocity(0);
       //Update the location for the labels of all of the other players
+      //option to escape room
+      if (this._xDown?.isDown && this.inEscapeRoom()) {
+        this._renderTexture?.clear();
+        this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 3464, y: 800 }, true);
+      }
       for (const player of this._players) {
         if (player.gameObjects?.label && player.gameObjects?.sprite.body) {
           player.gameObjects.label.setX(player.gameObjects.sprite.body.x);
@@ -479,6 +454,10 @@ export default class TownGameScene extends Phaser.Scene {
                 tile: '',
               });
             }
+          }
+
+          if (player.inventory.items.find(item => item.name === 'basement key') !== undefined) {
+            player.completed = true;
           }
           if (room2.x && room2.y && this.inRoom2()) {
             this._aiCharacter?.setVisible(false);
@@ -511,13 +490,13 @@ export default class TownGameScene extends Phaser.Scene {
             //  Erase the 'mask' texture from it based on the player position
             //  We - 107, because the mask image is 213px wide, so this puts it on the middle of the player
             //  We then minus the scrollX/Y values, because the RenderTexture is pinned to the screen and doesn't scroll
-            if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
-              this._renderTexture?.erase(
-                'mask',
-                player.location.x - 80 - cam.scrollX,
-                player.location.y - 80 - cam.scrollY,
-              );
-            }
+            // if (player.inventory.items.find(item => item.name === 'flashlight') !== undefined) {
+            this._renderTexture?.erase(
+              'mask',
+              player.location.x - 80 - cam.scrollX,
+              player.location.y - 80 - cam.scrollY,
+            );
+            // }
           }
           if (
             this._aiCharacter &&

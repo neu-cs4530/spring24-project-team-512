@@ -22,6 +22,7 @@ import {
   InteractableCommandBase,
   InteractableCommandResponse,
   InteractableID,
+  Item,
   PlayerID,
   PlayerLocation,
   TownSettingsUpdate,

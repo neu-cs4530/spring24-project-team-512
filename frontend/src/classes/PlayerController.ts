@@ -19,22 +19,22 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private readonly _userName: string;
 
-  private _flashlight: boolean;
-
   private _inEscapeRoom: boolean;
 
   private _inventory: Inventory;
 
   public gameObjects?: PlayerGameObjects;
 
+  private _completed: boolean;
+
   constructor(id: string, userName: string, location: PlayerLocation) {
     super();
     this._id = id;
     this._userName = userName;
     this._location = location;
-    this._flashlight = true;
     this._inventory = { capacity: 10, length: 0, items: [] };
     this._inEscapeRoom = false;
+    this._completed = false;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -55,12 +55,12 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._inEscapeRoom = inRoom;
   }
 
-  set flashlight(on: boolean) {
-    this._flashlight = on;
+  get completed(): boolean {
+    return this._completed;
   }
 
-  get flashlight(): boolean {
-    return this._flashlight;
+  set completed(status: boolean) {
+    this._completed = status;
   }
 
   get inventory(): Inventory {

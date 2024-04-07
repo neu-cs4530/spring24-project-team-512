@@ -56,11 +56,7 @@ export default function NewKeyBoxModal(): JSX.Element {
           description: 'mushrooms',
           tile: '',
         });
-        coveyTownController.ourPlayer.placeItem({
-          name: 'flashlight',
-          description: 'flashlight',
-          tile: '',
-        });
+        //coveyTownController.emit('inventoryUpdated', coveyTownController.ourPlayer.inventory.items);
         // gameArea?.placeTile(1940, 1440);
         try {
           toast({
