@@ -19,24 +19,22 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private readonly _userName: string;
 
-  private _flashlight: boolean;
-
   private _inEscapeRoom: boolean;
 
   private _inventory: Inventory;
 
-  public _renderTexture?: Phaser.GameObjects.RenderTexture;
-
   public gameObjects?: PlayerGameObjects;
+
+  private _completed: boolean;
 
   constructor(id: string, userName: string, location: PlayerLocation) {
     super();
     this._id = id;
     this._userName = userName;
     this._location = location;
-    this._flashlight = true;
     this._inventory = { capacity: 10, length: 0, items: [] };
     this._inEscapeRoom = false;
+    this._completed = false;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -57,16 +55,20 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._inEscapeRoom = inRoom;
   }
 
-  set flashlight(on: boolean) {
-    this._flashlight = on;
+  get completed(): boolean {
+    return this._completed;
   }
 
-  get flashlight(): boolean {
-    return this._flashlight;
+  set completed(status: boolean) {
+    this._completed = status;
   }
 
   get inventory(): Inventory {
     return this._inventory;
+  }
+
+  set inventory(inventory: Inventory) {
+    this._inventory = inventory;
   }
 
   get userName(): string {
@@ -115,10 +117,19 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   public placeItem(item: Item): void {
-    if (!this._inventory.items.includes(item)) {
-      this._inventory.items.push(item);
+    if (this._inventory.items.find(itemi => itemi.name == item.name) === undefined) {
+      this._inventory.length += 1;
+      this._inventory = {
+        items: [...this._inventory.items, item],
+        length: (this._inventory.length += 1),
+        capacity: 10,
+      };
     }
   }
+
+  // updateInventory() {
+  //   const gameController = useInteractableAreaController<EscapeRoomAreaController>('Escape Room 1');
+  // }
 
   static fromPlayerModel(modelPlayer: PlayerModel): PlayerController {
     return new PlayerController(modelPlayer.id, modelPlayer.userName, modelPlayer.location);

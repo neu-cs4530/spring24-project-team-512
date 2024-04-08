@@ -1,4 +1,12 @@
-import { EscapeRoomGameState, GameStatus, Item, PlayerID } from '../../types/CoveyTownSocket';
+import _ from 'lodash';
+import {
+  EscapeRoomGameState,
+  GameArea,
+  GameStatus,
+  Inventory,
+  Item,
+  PlayerID,
+} from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import GameAreaController, {
   GameEventTypes,
@@ -11,6 +19,7 @@ export type EscapeRoomEventTypes = GameEventTypes & {
   gameUpdated: () => void;
   gameEnd: () => void;
   playerChange: (newPlayer: PlayerController) => void;
+  inventoryUpdated: (newInventory: Item[]) => void;
 };
 
 export default class EscapeRoomAreaController extends GameAreaController<
@@ -49,8 +58,15 @@ export default class EscapeRoomAreaController extends GameAreaController<
     return status;
   }
 
-  get completed(): boolean {
-    return false;
+  get completed(): boolean | undefined {
+    return (
+      (this.player1?.inventory.items.find(item => item.name === 'room 2 key') !== undefined &&
+        this.player1?.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
+        this.player1?.inventory.items.find(item => item.name === 'room 3 key') !== undefined) ||
+      (this.player2?.inventory.items.find(item => item.name === 'room 2 key') !== undefined &&
+        this.player2?.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
+        this.player2?.inventory.items.find(item => item.name === 'room 3 key') !== undefined)
+    );
   }
 
   public async startGame(): Promise<void> {
@@ -77,8 +93,16 @@ export default class EscapeRoomAreaController extends GameAreaController<
 
   public placeItem(id: PlayerID, item: Item) {
     if (id === this.player1?.id) {
+      if (this.player1.id === this._townController.ourPlayer.id) {
+        this.player1.inventory.items.push(item);
+        this.emit('inventoryUpdated', this.player1.inventory.items);
+      }
       this._model.game?.state.player1Inventory?.items.push(item);
     } else if (id === this.player2?.id) {
+      if (this.player2.id === this._townController.ourPlayer.id) {
+        this.player2.inventory.items.push(item);
+        this.emit('inventoryUpdated', this.player2.inventory.items);
+      }
       this._model.game?.state.player2Inventory?.items.push(item);
     } else {
       throw new Error(PLAYER_NOT_IN_GAME_ERROR);
@@ -97,11 +121,9 @@ export default class EscapeRoomAreaController extends GameAreaController<
   }
 
   /**
-   * Returns true if the game is not empty and the game is not waiting for players
+   * Returns true if the game is not empty or the game is not waiting for players
    */
   public isActive(): boolean {
-    if (this.player1 !== undefined) return this.player1?.escapeRoom;
-    if (this.player2 !== undefined) return this.player2?.escapeRoom;
-    return false;
+    return !this.isEmpty() || this.status !== 'WAITING_FOR_PLAYERS';
   }
 }

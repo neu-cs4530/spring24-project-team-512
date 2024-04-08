@@ -21,14 +21,26 @@ export default class GameArea extends Interactable {
   }
 
   overlapExit(): void {
+    const gameType = this.townController.getGameAreaController(this).toInteractableAreaModel().type;
+    if (gameType === 'EscapeRoomArea') {
+      return;
+    }
     if (this._isInteracting) {
       this.townController.interactableEmitter.emit('endInteraction', this);
       this._isInteracting = false;
     }
   }
 
+  escapeRoomStatus(): boolean {
+    return this._scene.inEscapeRoom();
+  }
+
   movePlayer(x1: number, y1: number): void {
     this._scene.moveOurPlayerTo({ x: x1, y: y1 });
+  }
+
+  escapeRoomStart(x1: number, y1: number): void {
+    this._scene.escapeRoomStart({ x: x1, y: y1 });
   }
 
   interact(): void {

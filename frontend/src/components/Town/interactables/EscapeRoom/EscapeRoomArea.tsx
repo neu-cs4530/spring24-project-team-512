@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import PlayerController from '../../../../classes/PlayerController';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
-import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
+import { GameStatus, InteractableID, Item } from '../../../../types/CoveyTownSocket';
 import GameAreaInteractable from '../GameArea';
 import EscapeRoomAreaController from '../../../../classes/interactable/EscapeRoomAreaController';
 /**
@@ -50,6 +50,9 @@ export default function EscapeRoomArea({
 
   const [p1, setPlayer1] = useState<PlayerController | undefined>(gameAreaController.player1);
   const [p2, setPlayer2] = useState<PlayerController | undefined>(gameAreaController.player2);
+  const [inventoryP1, setInventoryP1] = useState<Item[] | undefined>(p1?.inventory.items);
+  const [inventoryP2, setInventoryP2] = useState<Item[] | undefined>(p2?.inventory.items);
+
   const toast = useToast();
 
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
@@ -67,35 +70,36 @@ export default function EscapeRoomArea({
   // const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
 
   useEffect(() => {
-    console.log(townController.ourPlayer);
     const updateGameState = () => {
       console.log(gameAreaController);
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
       setPlayer2(gameAreaController.player2);
+      setInventoryP1(p1?.inventory.items);
+      setInventoryP2(p2?.inventory.items);
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
-    const onGameEnd = () => {
-      const completed = gameAreaController.completed;
-      if (!completed) {
-        toast({
-          title: 'Game Over',
-          description: 'Escape Room Failed',
-          status: 'info',
-        });
-      } else {
-        toast({
-          title: 'Game over',
-          description: 'You won!',
-          status: 'success',
-        });
-      }
-    };
+    // const onGameEnd = () => {
+    //   const completed = gameAreaController.completed;
+    //   if (!completed && !gameArea?.escapeRoomStatus) {
+    //     toast({
+    //       title: 'Game Over',
+    //       description: 'Escape Room Failed',
+    //       status: 'info',
+    //     });
+    //   } else {
+    //     toast({
+    //       title: 'Game over',
+    //       description: 'You won!',
+    //       status: 'success',
+    //     });
+    //   }
+    // };
 
-    gameAreaController.addListener('gameEnd', onGameEnd);
+    // gameAreaController.addListener('gameEnd', onGameEnd);
     return () => {
-      gameAreaController.removeListener('gameEnd', onGameEnd);
+      // gameAreaController.removeListener('gameEnd', onGameEnd);
       gameAreaController.removeListener('gameUpdated', updateGameState);
     };
   }, [townController, gameAreaController, toast]);
@@ -125,6 +129,7 @@ export default function EscapeRoomArea({
           setJoiningGame(true);
           try {
             await gameAreaController.startGame();
+            gameArea?.escapeRoomStart(2065, 1800);
           } catch (err) {
             toast({
               title: 'Error starting game',
@@ -151,13 +156,7 @@ export default function EscapeRoomArea({
           setJoiningGame(true);
           try {
             await gameAreaController.singleGame();
-            if (
-              gameAreaController.toInteractableAreaModel().game?.state.player1Ready &&
-              gameAreaController.toInteractableAreaModel().game?.state.player2Ready
-            ) {
-              gameArea?.movePlayer(2065, 1800);
-            }
-            if (p1) p1.escapeRoom = true;
+            gameArea?.movePlayer(2065, 1800);
           } catch (err) {
             toast({
               title: 'Error starting game',
@@ -172,8 +171,33 @@ export default function EscapeRoomArea({
         Single Player
       </Button>
     );
+    const joinGameButton = (
+      <Button
+        onClick={async () => {
+          setJoiningGame(true);
+          try {
+            await gameAreaController.joinGame();
+            if (p1) p1.escapeRoom = true;
+            if (p1 && p1.escapeRoom && p2) p2.escapeRoom = true;
+          } catch (err) {
+            toast({
+              title: 'Error joining game',
+              description: (err as Error).toString(),
+              status: 'error',
+            });
+          }
+          setJoiningGame(false);
+        }}
+        isLoading={joiningGame}
+        disabled={joiningGame}>
+        Join New Game
+      </Button>
+    );
     gameStatusText = (
-      <b>Press to play single player, or wait for one more player. {singleGameButton}</b>
+      <b>
+        Press to play single player, or wait for one more player. {singleGameButton}.
+        {joinGameButton}
+      </b>
     );
   } else {
     const joinGameButton = (
@@ -181,8 +205,9 @@ export default function EscapeRoomArea({
         onClick={async () => {
           setJoiningGame(true);
           try {
-            if (p1) p1.escapeRoom = true;
             await gameAreaController.joinGame();
+            if (p1) p1.escapeRoom = true;
+            if (p1 && p1.escapeRoom && p2) p2.escapeRoom = true;
           } catch (err) {
             toast({
               title: 'Error joining game',

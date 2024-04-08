@@ -150,7 +150,6 @@ export interface EscapeRoomGameState extends WinnableGameState {
   player1Ready?: boolean;
   // Whether the yellow player is ready to start the game
   player2Ready?: boolean;
-  // the time the player has spent in the escape room
   flashlight?: boolean;
   player1In?: boolean;
   player2In?: boolean;

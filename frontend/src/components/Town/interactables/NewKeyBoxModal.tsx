@@ -13,8 +13,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useInteractable } from '../../../classes/TownController';
+import {
+  useActiveInteractableAreas,
+  useInteractable,
+  useInteractableAreaController,
+} from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
+import EscapeRoomAreaController from '../../../classes/interactable/EscapeRoomAreaController';
 
 export default function NewKeyBoxModal(): JSX.Element {
   const coveyTownController = useTownController();
@@ -43,24 +48,22 @@ export default function NewKeyBoxModal(): JSX.Element {
 
   const toast = useToast();
 
+  const gameAreaController =
+    useInteractableAreaController<EscapeRoomAreaController>('Escape Room 1');
   const enterCombination = useCallback(async () => {
     if (keyBoxDisplay) {
       if (topic === '240') {
         coveyTownController.ourPlayer.placeItem({
           name: 'room 2 key',
-          description: 'key for room 2',
+          description: 'room 2 key',
           tile: '',
         });
         coveyTownController.ourPlayer.placeItem({
-          name: 'mushrooms',
-          description: 'mushrooms',
+          name: 'shrinker',
+          description: 'shrinker (press m to use)',
           tile: '',
         });
-        coveyTownController.ourPlayer.placeItem({
-          name: 'flashlight',
-          description: 'flashlight',
-          tile: '',
-        });
+        gameAreaController.emit('inventoryUpdated', coveyTownController.ourPlayer.inventory.items);
         // gameArea?.placeTile(1940, 1440);
         try {
           toast({
@@ -89,7 +92,7 @@ export default function NewKeyBoxModal(): JSX.Element {
         try {
           toast({
             title: 'That is incorrect!',
-            status: 'success',
+            status: 'info',
           });
           setTopic('');
           coveyTownController.unPause();

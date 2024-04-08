@@ -137,8 +137,10 @@ export default function GameAreaWrapper(): JSX.Element {
   const closeModal = useCallback(() => {
     if (gameArea) {
       const controller = townController.getGameAreaController(gameArea);
-      townController.interactEnd(gameArea);
-      controller.leaveGame();
+      if (gameArea.type !== 'EscapeRoomArea') {
+        townController.interactEnd(gameArea);
+        controller.leaveGame();
+      }
     }
   }, [townController, gameArea]);
   if (gameArea) {
