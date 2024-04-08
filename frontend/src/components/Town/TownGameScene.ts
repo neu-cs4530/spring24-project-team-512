@@ -314,6 +314,7 @@ export default class TownGameScene extends Phaser.Scene {
         );
         this.coveyTownController.ourPlayer.inventory = { items: [], length: 0, capacity: 10 };
         gameAreaController?.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
+        this._timer?.destroy();
 
         this.coveyTownController.ourPlayer.escapeRoom = false;
       }
