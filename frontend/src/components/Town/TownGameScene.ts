@@ -403,6 +403,19 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   update() {
+    if (this.inEscapeRoom() && this._timer === undefined) {
+      this._timerText = this.add.text(600, 50, 'Time: 0', { fontFamily: 'Arial', fontSize: 24, color: '#ffffff' })
+      .setScrollFactor(0)
+      .setDepth(30);
+      
+      // Create timer event
+      this._timer = this.time.addEvent({
+          delay: 10,
+          callback: this.updateTime,
+          callbackScope: this,
+          loop: true
+      });
+    }
     if (this._paused) {
       if (this._xDown?.isDown && this.inEscapeRoom()) {
         this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 3464, y: 800 });
@@ -671,19 +684,6 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   create() {
-
-    this._timerText = this.add.text(600, 50, 'Time: 0', { fontFamily: 'Arial', fontSize: 24, color: '#ffffff' })
-    .setScrollFactor(0)
-    .setDepth(30);
-    
-    // Create timer event
-    this._timer = this.time.addEvent({
-        delay: 10,
-        callback: this.updateTime,
-        callbackScope: this,
-        loop: true
-    });
-
 
     this._map = this.make.tilemap({ key: 'map' });
 
