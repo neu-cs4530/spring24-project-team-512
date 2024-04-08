@@ -80,6 +80,12 @@ export default class TownGameScene extends Phaser.Scene {
 
   private _xDown?: Phaser.Input.Keyboard.Key;
 
+  private _realTime: number;
+
+  private _timer?: Phaser.Time.TimerEvent;
+
+  private _timerText?: Phaser.GameObjects.Text;
+
   /**
    * Layers that the player can collide with.
    */
@@ -112,6 +118,13 @@ export default class TownGameScene extends Phaser.Scene {
     this._resourcePathPrefix = resourcePathPrefix;
     this.coveyTownController = coveyTownController;
     this._players = this.coveyTownController.players;
+    this._realTime = 0;
+  }
+
+  updateTime() {
+    // Update timer text with elapsed time
+    this._realTime += (this._timer === undefined ? 0 : this._timer.getElapsed() / 1000);
+    this._timerText?.setText('Time: ' + this._realTime?.toFixed(2));
   }
 
   preload() {
@@ -658,6 +671,20 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   create() {
+
+    this._timerText = this.add.text(600, 50, 'Time: 0', { fontFamily: 'Arial', fontSize: 24, color: '#ffffff' })
+    .setScrollFactor(0)
+    .setDepth(30);
+    
+    // Create timer event
+    this._timer = this.time.addEvent({
+        delay: 10,
+        callback: this.updateTime,
+        callbackScope: this,
+        loop: true
+    });
+
+
     this._map = this.make.tilemap({ key: 'map' });
 
     /* Parameters are the name you gave the tileset in Tiled and then the key of the
