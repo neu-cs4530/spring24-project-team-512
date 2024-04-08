@@ -80,26 +80,26 @@ export default function EscapeRoomArea({
       setInventoryP2(p2?.inventory.items);
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
-    const onGameEnd = () => {
-      const completed = gameAreaController.completed;
-      if (!completed && !gameArea?.escapeRoomStatus) {
-        toast({
-          title: 'Game Over',
-          description: 'Escape Room Failed',
-          status: 'info',
-        });
-      } else {
-        toast({
-          title: 'Game over',
-          description: 'You won!',
-          status: 'success',
-        });
-      }
-    };
+    // const onGameEnd = () => {
+    //   const completed = gameAreaController.completed;
+    //   if (!completed && !gameArea?.escapeRoomStatus) {
+    //     toast({
+    //       title: 'Game Over',
+    //       description: 'Escape Room Failed',
+    //       status: 'info',
+    //     });
+    //   } else {
+    //     toast({
+    //       title: 'Game over',
+    //       description: 'You won!',
+    //       status: 'success',
+    //     });
+    //   }
+    // };
 
-    gameAreaController.addListener('gameEnd', onGameEnd);
+    // gameAreaController.addListener('gameEnd', onGameEnd);
     return () => {
-      gameAreaController.removeListener('gameEnd', onGameEnd);
+      // gameAreaController.removeListener('gameEnd', onGameEnd);
       gameAreaController.removeListener('gameUpdated', updateGameState);
     };
   }, [townController, gameAreaController, toast]);

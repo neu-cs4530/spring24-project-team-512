@@ -67,6 +67,10 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     return this._inventory;
   }
 
+  set inventory(inventory: Inventory) {
+    this._inventory = inventory;
+  }
+
   get userName(): string {
     return this._userName;
   }
@@ -113,10 +117,19 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   public placeItem(item: Item): void {
-    if (!this._inventory.items.includes(item)) {
-      this._inventory.items.push(item);
+    if (this._inventory.items.find(itemi => itemi.name == item.name) === undefined) {
+      this._inventory.length += 1;
+      this._inventory = {
+        items: [...this._inventory.items, item],
+        length: (this._inventory.length += 1),
+        capacity: 10,
+      };
     }
   }
+
+  // updateInventory() {
+  //   const gameController = useInteractableAreaController<EscapeRoomAreaController>('Escape Room 1');
+  // }
 
   static fromPlayerModel(modelPlayer: PlayerModel): PlayerController {
     return new PlayerController(modelPlayer.id, modelPlayer.userName, modelPlayer.location);

@@ -290,12 +290,17 @@ export default class TownGameScene extends Phaser.Scene {
     ) as Phaser.Types.Tilemaps.TiledObject;
     if (gameObjects && roomReturn.x && roomReturn.y && roomReturn.height && roomReturn.width) {
       if (
-        this.coveyTownController.ourPlayer.location.x < roomReturn.x + roomReturn.width &&
-        this.coveyTownController.ourPlayer.location.x > roomReturn.x &&
-        this.coveyTownController.ourPlayer.location.y > roomReturn.y &&
-        this.coveyTownController.ourPlayer.location.y < roomReturn.y + roomReturn.height
+        this.coveyTownController.ourPlayer.location.x < roomReturn.x + roomReturn.width + 50 &&
+        this.coveyTownController.ourPlayer.location.x > roomReturn.x - 50 &&
+        this.coveyTownController.ourPlayer.location.y > roomReturn.y - 50 &&
+        this.coveyTownController.ourPlayer.location.y < roomReturn.y + roomReturn.height + 50
       ) {
-        this.coveyTownController.ourPlayer.inventory.items = [];
+        const gameAreaController = this.coveyTownController.gameAreas.find(
+          eachArea => eachArea.id == 'Escape Room 1',
+        );
+        this.coveyTownController.ourPlayer.inventory = { items: [], length: 0, capacity: 10 };
+        gameAreaController?.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
+
         this.coveyTownController.ourPlayer.escapeRoom = false;
       }
     }
@@ -450,11 +455,19 @@ export default class TownGameScene extends Phaser.Scene {
               this.coveyTownController.ourPlayer.location.y > room3Key.y &&
               this.coveyTownController.ourPlayer.location.y < room3Key.y + room3Key.height
             ) {
+              const gameAreaController = this.coveyTownController.gameAreas.find(
+                eachArea => eachArea.id == 'Escape Room 1',
+              );
               this.coveyTownController.ourPlayer.placeItem({
                 name: 'room 3 key',
                 description: 'room 3 key',
                 tile: '',
               });
+
+              gameAreaController?.emit(
+                'inventoryUpdated',
+                this.coveyTownController.ourPlayer.inventory,
+              );
             }
           }
 
@@ -479,7 +492,7 @@ export default class TownGameScene extends Phaser.Scene {
               this.scale.height + 1000,
             );
             if (
-              player.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
+              player.inventory.items.find(item => item.name === 'shrinker') !== undefined &&
               this._mDown?.isDown
             ) {
               this.coveyTownController.ourPlayer.gameObjects?.sprite.setDisplaySize(10, 10);

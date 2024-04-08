@@ -48,20 +48,22 @@ export default function NewKeyBoxModal(): JSX.Element {
 
   const toast = useToast();
 
+  const gameAreaController =
+    useInteractableAreaController<EscapeRoomAreaController>('Escape Room 1');
   const enterCombination = useCallback(async () => {
     if (keyBoxDisplay) {
       if (topic === '240') {
         coveyTownController.ourPlayer.placeItem({
           name: 'room 2 key',
-          description: 'key for room 2',
+          description: 'room 2 key',
           tile: '',
         });
         coveyTownController.ourPlayer.placeItem({
-          name: 'mushrooms',
-          description: 'mushrooms',
+          name: 'shrinker',
+          description: 'shrinker (press m to use)',
           tile: '',
         });
-        //coveyTownController.emit('inventoryUpdated', coveyTownController.ourPlayer.inventory.items);
+        gameAreaController.emit('inventoryUpdated', coveyTownController.ourPlayer.inventory.items);
         // gameArea?.placeTile(1940, 1440);
         try {
           toast({
