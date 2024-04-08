@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import assert from 'assert';
 import Phaser from 'phaser';
 import PlayerController, { MOVEMENT_SPEED } from '../../classes/PlayerController';
@@ -470,6 +471,30 @@ export default class TownGameScene extends Phaser.Scene {
               );
             }
           }
+
+          const shovel = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Shovel',
+          ) as Phaser.Types.Tilemaps.TiledObject;
+
+          if (shovel.x && shovel.y && shovel.height && shovel.width) {
+            if (
+              this.coveyTownController.ourPlayer.location.x < shovel.x + shovel.width &&
+              this.coveyTownController.ourPlayer.location.x > shovel.x &&
+              this.coveyTownController.ourPlayer.location.y > shovel.y &&
+              this.coveyTownController.ourPlayer.location.y < shovel.y + shovel.height
+            ) {
+              this.coveyTownController.ourPlayer.placeItem({
+                name: 'shovel',
+                description: 'shovel',
+                tile: '',
+              });
+              // Use phaser to remove the shovel tile
+              this.map.removeTileAt(shovel.x, shovel.y, true, true, 'World');
+            }
+          }
+
+
 
           if (player.inventory.items.find(item => item.name === 'basement key') !== undefined) {
             player.completed = true;

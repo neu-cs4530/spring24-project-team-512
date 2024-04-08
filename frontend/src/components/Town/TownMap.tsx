@@ -129,9 +129,14 @@ export default function TownMap(): JSX.Element {
 
       <div id='map-container' />
       <div id='social-container'>
+<<<<<<< HEAD
         {DisplayInstruction()}
         {DisplayInventory()}
         {DisplaySideBar()}
+=======
+        <Instruction />
+        <SocialSidebar />
+>>>>>>> 8f13ea7215e6d63d102038d1b37dfa390f5bd5b4
       </div>
     </div>
   );
