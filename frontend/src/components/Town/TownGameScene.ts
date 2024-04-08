@@ -57,6 +57,8 @@ export default class TownGameScene extends Phaser.Scene {
 
   private _aiCharacter?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
+  private _shovelSprite?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+
   /*
    * A "captured" key doesn't send events to the browser - they are trapped by Phaser
    * When pausing the game, we uncapture all keys, and when resuming, we re-capture them.
@@ -390,7 +392,37 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   update() {
+
+    // Check if player is colliding with shovelsprite 
+    if (this._shovelSprite) {
+      const shovel = this._shovelSprite;
+      if (
+        this.coveyTownController.ourPlayer.location.x < shovel.x + shovel.width &&
+        this.coveyTownController.ourPlayer.location.x > shovel.x &&
+        this.coveyTownController.ourPlayer.location.y > shovel.y &&
+        this.coveyTownController.ourPlayer.location.y < shovel.y + shovel.height
+      ) {
+        // If our player touches the shovel, push it to their inventory and remove the sprite
+        this.coveyTownController.ourPlayer.placeItem({
+          name: 'shovel',
+          description: 'shovel',
+          tile: '',
+        });
+        this._shovelSprite.destroy();
+        this._shovelSprite.setVisible(false);
+        const gameAreaController = this.coveyTownController.gameAreas.find(
+          eachArea => eachArea.id == 'Escape Room 1');
+        // Use phaser to remove the shovel tile
+        //this.map.removeTileAt(shovel.x, shovel.y, true, true, 2);
+        gameAreaController?.emit(
+          'inventoryUpdated',
+          this.coveyTownController.ourPlayer.inventory,
+        );
+      }
+    }
+
     if (this._paused) {
+      
       if (this._xDown?.isDown && this.inEscapeRoom()) {
         this.moveOurPlayerTo({ rotation: 'front', moving: false, x: 3464, y: 800 });
       }
@@ -472,27 +504,34 @@ export default class TownGameScene extends Phaser.Scene {
             }
           }
 
-          const shovel = this.map.findObject(
-            'Objects',
-            obj => obj.name === 'Shovel',
-          ) as Phaser.Types.Tilemaps.TiledObject;
+          // const shovel = this.map.findObject(
+          //   'Objects',
+          //   obj => obj.name === 'Shovel',
+          // ) as Phaser.Types.Tilemaps.TiledObject;
 
-          if (shovel.x && shovel.y && shovel.height && shovel.width) {
-            if (
-              this.coveyTownController.ourPlayer.location.x < shovel.x + shovel.width &&
-              this.coveyTownController.ourPlayer.location.x > shovel.x &&
-              this.coveyTownController.ourPlayer.location.y > shovel.y &&
-              this.coveyTownController.ourPlayer.location.y < shovel.y + shovel.height
-            ) {
-              this.coveyTownController.ourPlayer.placeItem({
-                name: 'shovel',
-                description: 'shovel',
-                tile: '',
-              });
-              // Use phaser to remove the shovel tile
-              this.map.removeTileAt(shovel.x, shovel.y, true, true, 'World');
-            }
-          }
+          // if (shovel.x && shovel.y && shovel.height && shovel.width) {
+          //   if (
+          //     this.coveyTownController.ourPlayer.location.x < shovel.x + shovel.width &&
+          //     this.coveyTownController.ourPlayer.location.x > shovel.x &&
+          //     this.coveyTownController.ourPlayer.location.y > shovel.y &&
+          //     this.coveyTownController.ourPlayer.location.y < shovel.y + shovel.height
+          //   ) {
+          //     const gameAreaController = this.coveyTownController.gameAreas.find(
+          //       eachArea => eachArea.id == 'Escape Room 1',
+          //     );
+          //     this.coveyTownController.ourPlayer.placeItem({
+          //       name: 'shovel',
+          //       description: 'shovel',
+          //       tile: '',
+          //     });
+          //     // Use phaser to remove the shovel tile
+          //     //this.map.removeTileAt(shovel.x, shovel.y, true, true, 2);
+          //     gameAreaController?.emit(
+          //       'inventoryUpdated',
+          //       this.coveyTownController.ourPlayer.inventory,
+          //     );
+          //   }
+          // }
 
 
 
@@ -782,6 +821,12 @@ export default class TownGameScene extends Phaser.Scene {
       locationManagedByGameScene: true,
     };
 
+    this._shovelSprite = this.physics.add
+      .sprite(555.58, 2088.33, 'atlas', 'shovel')
+      .setSize(20, 20)
+      .setOffset(0, 0)
+      .setDepth(6);
+
     this._aiCharacter = this.physics.add
       .sprite(oppSpawnPoint.x, oppSpawnPoint.y, 'atlas', 'misa-left')
       .setSize(30, 40)
@@ -804,7 +849,11 @@ export default class TownGameScene extends Phaser.Scene {
       if (this._aiCharacter) {
         this.physics.add.collider(this._aiCharacter, layer);
       }
+      if (this._shovelSprite) {
+        this.physics.add.collider(this._shovelSprite, layer);
+      }
     });
+
 
     // Create the player's walking animations from the texture atlas. These are stored in the global
     // animation manager so any sprite can access them.
@@ -853,6 +902,8 @@ export default class TownGameScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
+
+    this._shovelSprite?.setVisible(true);
 
     const camera = this.cameras.main;
     camera.startFollow(this.coveyTownController.ourPlayer.gameObjects.sprite);

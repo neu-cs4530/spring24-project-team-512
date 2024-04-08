@@ -42,11 +42,7 @@ export default class PopUpArea extends Interactable {
 
       if (inven.items.find(item => (item.name === 'shovel')) !== undefined) {
         message = 'Press F to dig.';
-      } else {
-        message = 'You need a shovel to dig here.';
       }
-      
-      message = 'Press F to dig.';
     }
     if (!this._infoTextBox) {
       this._infoTextBox = this.scene.add
