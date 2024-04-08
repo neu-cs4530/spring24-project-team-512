@@ -5,7 +5,6 @@ export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
   movement: (newLocation: PlayerLocation) => void;
-  inventoryUpdated: (newInventory: Inventory) => void;
 };
 
 export type PlayerGameObjects = {
@@ -116,7 +115,6 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   public placeItem(item: Item): void {
     if (!this._inventory.items.includes(item)) {
       this._inventory.items.push(item);
-      this.emit('inventoryUpdated', this._inventory);
     }
   }
 

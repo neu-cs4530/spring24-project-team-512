@@ -6,7 +6,6 @@ import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import NewConversationModal from './interactables/NewCoversationModal';
 import NewKeyBoxModal from './interactables/NewKeyBoxModal';
 import NewHintModal from './interactables/HintModal';
-
 import TownGameScene from './TownGameScene';
 import GameAreaWrapper from './interactables/GamesArea';
 import useChatContext from '../VideoCall/VideoFrontend/hooks/useChatContext/useChatContext';
@@ -15,7 +14,8 @@ import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import Instruction from '../SocialSidebar/Instruction';
 import InventoryDisplay from '../SocialSidebar/Inventory';
-
+import { useActiveInteractableAreas, useInteractable } from '../../classes/TownController';
+import GameAreaInteractable from './interactables/GameArea';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     chatWindowContainer: {
@@ -50,6 +50,36 @@ export default function TownMap(): JSX.Element {
   const { isChatWindowOpen } = useChatContext();
   const classes = useStyles();
 
+  const gameArea = useInteractable<GameAreaInteractable>('gameArea');
+
+  const DisplayInventory = () => {
+    if (
+      useActiveInteractableAreas().find(
+        area => area.toInteractableAreaModel().type === 'EscapeRoomArea',
+      ) !== undefined
+    ) {
+      console.log(gameArea);
+      // console.log('game area id', gameArea.id);
+
+      return <InventoryDisplay interactableID={'Escape Room 1'} />;
+    } else {
+      return;
+    }
+  };
+  function DisplaySideBar(): React.ReactNode {
+    if (coveyTownController.ourPlayer.escapeRoom === false) {
+      return <SocialSidebar />;
+    } else {
+      return;
+    }
+  }
+  function DisplayInstruction(): React.ReactNode {
+    if (coveyTownController.ourPlayer.escapeRoom === true) {
+      return <Instruction />;
+    } else {
+      return;
+    }
+  }
   useEffect(() => {
     const config = {
       type: Phaser.AUTO,
@@ -99,9 +129,9 @@ export default function TownMap(): JSX.Element {
 
       <div id='map-container' />
       <div id='social-container'>
-        <Instruction />
-        <InventoryDisplay />
-        <SocialSidebar />
+        {DisplayInstruction()}
+        {DisplayInventory()}
+        {DisplaySideBar()}
       </div>
     </div>
   );

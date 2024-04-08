@@ -90,7 +90,7 @@ export default function NewKeyBoxModal(): JSX.Element {
         try {
           toast({
             title: 'That is incorrect!',
-            status: 'success',
+            status: 'info',
           });
           setTopic('');
           coveyTownController.unPause();

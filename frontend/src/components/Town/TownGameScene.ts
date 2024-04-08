@@ -408,6 +408,9 @@ export default class TownGameScene extends Phaser.Scene {
       return;
     }
 
+    if (this.inEscapeRoom()) {
+      this.coveyTownController.ourPlayer.escapeRoom = true;
+    }
     //moves the opponent around room 2
     this.moveAI();
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;

@@ -1,9 +1,16 @@
 import { Box, Heading, ListItem, OrderedList, Tooltip, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { usePlayers } from '../../classes/TownController';
+import {
+  useActiveInteractableAreas,
+  useInteractable,
+  useInteractableAreaController,
+  usePlayers,
+} from '../../classes/TownController';
 import useTownController from '../../hooks/useTownController';
 import PlayerName from './PlayerName';
-import { Inventory, Item } from '../../types/CoveyTownSocket';
+import { InteractableID, Inventory, Item } from '../../types/CoveyTownSocket';
+import EscapeRoomAreaController from '../../classes/interactable/EscapeRoomAreaController';
+import GameAreaInteractable from '../Town/interactables/GameArea';
 
 /**
  * Lists the current players in the town, along with the current town's name and ID
@@ -11,9 +18,22 @@ import { Inventory, Item } from '../../types/CoveyTownSocket';
  * See relevant hooks: `usePlayersInTown` and `useCoveyAppState`
  *
  */
-export default function InventoryDisplay(): JSX.Element {
+export default function InventoryDisplay({
+  interactableID,
+}: {
+  interactableID: InteractableID;
+}): JSX.Element {
   //   const players = usePlayers();
+
   const townController = useTownController();
+  const escapeRoomArea = useActiveInteractableAreas().filter(
+    area => area.type === 'EscapeRoomArea',
+  )[0];
+
+  const gameArea = useInteractable<GameAreaInteractable>('gameArea');
+
+  const gameAreaController =
+    useInteractableAreaController<EscapeRoomAreaController>(interactableID);
 
   const player = townController.ourPlayer;
 
@@ -23,17 +43,17 @@ export default function InventoryDisplay(): JSX.Element {
     const updateInventory = () => {
       setInventory(player.inventory);
     };
-    player.addListener('inventoryUpdated', updateInventory);
+    gameAreaController.addListener('inventoryUpdated', updateInventory);
 
     return () => {
-      player.removeListener('inventoryUpdated', updateInventory);
+      gameAreaController.removeListener('inventoryUpdated', updateInventory);
     };
-  }, [townController, player]);
+  }, [gameAreaController, player]);
 
-  //   const sorted = players.concat([]);
-  //   sorted.sort((p1, p2) =>
-  //     p1.userName.localeCompare(p2.userName, undefined, { numeric: true, sensitivity: 'base' }),
-  //   );
+  // const sorted = players.concat([]);
+  // sorted.sort((p1, p2) =>
+  //   p1.userName.localeCompare(p2.userName, undefined, { numeric: true, sensitivity: 'base' }),
+  // );
 
   return (
     <VStack

@@ -1,4 +1,12 @@
-import { EscapeRoomGameState, GameStatus, Item, PlayerID } from '../../types/CoveyTownSocket';
+import _ from 'lodash';
+import {
+  EscapeRoomGameState,
+  GameArea,
+  GameStatus,
+  Inventory,
+  Item,
+  PlayerID,
+} from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import GameAreaController, {
   GameEventTypes,
@@ -11,6 +19,7 @@ export type EscapeRoomEventTypes = GameEventTypes & {
   gameUpdated: () => void;
   gameEnd: () => void;
   playerChange: (newPlayer: PlayerController) => void;
+  inventoryUpdated: (newInventory: Item[]) => void;
 };
 
 export default class EscapeRoomAreaController extends GameAreaController<
@@ -50,7 +59,14 @@ export default class EscapeRoomAreaController extends GameAreaController<
   }
 
   get completed(): boolean | undefined {
-    return this.player1?.completed || this.player2?.completed;
+    return (
+      (this.player1?.inventory.items.find(item => item.name === 'room 2 key') !== undefined &&
+        this.player1?.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
+        this.player1?.inventory.items.find(item => item.name === 'room 3 key') !== undefined) ||
+      (this.player2?.inventory.items.find(item => item.name === 'room 2 key') !== undefined &&
+        this.player2?.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
+        this.player2?.inventory.items.find(item => item.name === 'room 3 key') !== undefined)
+    );
   }
 
   public async startGame(): Promise<void> {
@@ -105,7 +121,7 @@ export default class EscapeRoomAreaController extends GameAreaController<
   }
 
   /**
-   * Returns true if the game is not empty and the game is not waiting for players
+   * Returns true if the game is not empty or the game is not waiting for players
    */
   public isActive(): boolean {
     return !this.isEmpty() || this.status !== 'WAITING_FOR_PLAYERS';

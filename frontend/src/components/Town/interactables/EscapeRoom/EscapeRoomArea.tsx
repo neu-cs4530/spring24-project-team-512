@@ -82,7 +82,7 @@ export default function EscapeRoomArea({
     gameAreaController.addListener('gameUpdated', updateGameState);
     const onGameEnd = () => {
       const completed = gameAreaController.completed;
-      if (!completed) {
+      if (!completed && !gameArea?.escapeRoomStatus) {
         toast({
           title: 'Game Over',
           description: 'Escape Room Failed',
