@@ -323,8 +323,11 @@ export default class TownGameScene extends Phaser.Scene {
         this.coveyTownController.ourPlayer.escapeRoom = false;
         this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
 
+        if (this.coveyTownController.ourPlayer.inventory.items.find(item => item.name === 'basement key')) {
+          this.coveyTownController.ourPlayer.completed = true;
+        }
+
         const gameAreaController = this.coveyTownController.gameAreas.find(area => area.id === 'Escape Room 1');
-        console.log('id', gameAreaController?.id);
         gameAreaController?.leaveGame();
       }
     }
@@ -364,7 +367,7 @@ export default class TownGameScene extends Phaser.Scene {
           override === undefined) ||
         (this.inRoom3() &&
           this.coveyTownController.ourPlayer.inventory.items.find(
-            item => item.name === 'room 4 key',
+            item => item.name === 'basement key',
           ) === undefined &&
           override === undefined)
       ) {
@@ -580,8 +583,8 @@ export default class TownGameScene extends Phaser.Scene {
                   eachArea => eachArea.id == 'Escape Room 1',
                 );
                 this.coveyTownController.ourPlayer.placeItem({
-                  name: 'room 4 key',
-                  description: 'room 4 key',
+                  name: 'basement key',
+                  description: 'basement key',
                   tile: '',
                 });
 

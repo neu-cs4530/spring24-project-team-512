@@ -200,6 +200,11 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   private _sessionToken?: string;
 
   /**
+   * indicates if a player is in the escape room
+   */
+  private _playerInGame?: boolean;
+
+  /**
    * A secret token that is provided by the townsService when we connect, and can be used to connect
    * to a third-party video conferecing service.
    */
@@ -288,6 +293,14 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
 
   public get townID() {
     return this._townID;
+  }
+
+  public get playerInGame(): boolean {
+    return this.playerInGame;
+  }
+
+  public set playerInGame(status: boolean) {
+    this.playerInGame = status;
   }
 
   public pause(): void {
