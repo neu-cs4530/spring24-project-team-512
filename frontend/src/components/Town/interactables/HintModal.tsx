@@ -8,24 +8,24 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
 import HintAreaInteractable from './HintArea';
-import { get } from 'lodash';
 
 export default function NewHintModal(): JSX.Element {
   const coveyTownController = useTownController();
 
   const hintDisplay = useInteractable<HintAreaInteractable>('hintArea');
 
-  // const gameAreaController =
-  //   useInteractableAreaController<EscapeRoomAreaController>(interactableID);
-
   const isOpen = hintDisplay !== undefined;
 
-  const hints = {
-    1: ['Count the Legs', 'The key to open the door is in the lockbox.'],
+  const hints: { [key: number]: string[] } = {
+    1: [
+      'There are 3 statues, the combination for the lockbox is 3 digits.',
+      'Pay attention to the legs of the statues',
+      'The key to open the door is in the lockbox.',
+    ],
     2: [
       'Dont forget about your shrinking power!',
       'Youll need a key to unlock the exit door.',
@@ -38,6 +38,13 @@ export default function NewHintModal(): JSX.Element {
       'The man who once held the key was blind.',
     ],
   };
+
+  const [hintIndices, setHintIndices] = useState<{ [key: number]: number }>({
+    1: 0,
+    2: 0,
+    3: 0,
+  });
+  const [triggerHintUpdate, setTriggerHintUpdate] = useState(false);
 
   useEffect(() => {
     if (hintDisplay) {
@@ -56,11 +63,12 @@ export default function NewHintModal(): JSX.Element {
   function getHint(room: number) {
     if (room in hints) {
       const roomHints = hints[room as keyof typeof hints];
-      const randomHintIndex = Math.floor(Math.random() * roomHints.length);
-      return roomHints[randomHintIndex];
+      const hintIndex = hintIndices[room];
+      return roomHints[hintIndex];
     }
     return '';
   }
+
   function displayHint(): React.ReactNode {
     let room: number;
     if (hintDisplay !== undefined) {
@@ -71,70 +79,22 @@ export default function NewHintModal(): JSX.Element {
     return getHint(room);
   }
 
-  //   const displayHint = useCallback(async () => {
-  //     if (hintDisplay) {
-  //       if (topic === '240') {
-  //         coveyTownController.ourPlayer.placeItem({
-  //           name: 'key',
-  //           description: 'key for room 2',
-  //           tile: '',
-  //         });
-  //         coveyTownController.ourPlayer.placeItem({
-  //           name: 'flashlight',
-  //           description: 'flashlight',
-  //           tile: '',
-  //         });
-  //         // gameArea?.placeTile(1940, 1440);
-  //         try {
-  //           toast({
-  //             title: 'That is correct!',
-  //             status: 'success',
-  //           });
-  //           setTopic('');
-  //           coveyTownController.unPause();
-  //           closeModal();
-  //         } catch (err) {
-  //           if (err instanceof Error) {
-  //             toast({
-  //               title: 'That is Wrong!',
-  //               description: err.toString(),
-  //               status: 'error',
-  //             });
-  //           } else {
-  //             console.trace(err);
-  //             toast({
-  //               title: 'Unexpected Error',
-  //               status: 'error',
-  //             });
-  //           }
-  //         }
-  //       } else {
-  //         try {
-  //           toast({
-  //             title: 'That is incorrect!',
-  //             status: 'success',
-  //           });
-  //           setTopic('');
-  //           coveyTownController.unPause();
-  //           closeModal();
-  //         } catch (err) {
-  //           if (err instanceof Error) {
-  //             toast({
-  //               title: 'That is Wrong!',
-  //               description: err.toString(),
-  //               status: 'error',
-  //             });
-  //           } else {
-  //             console.trace(err);
-  //             toast({
-  //               title: 'Unexpected Error',
-  //               status: 'error',
-  //             });
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }, [topic, setTopic, coveyTownController, hintDisplay, closeModal, toast]);
+  useEffect(() => {
+    if (hintDisplay && triggerHintUpdate) {
+      const room = hintDisplay.displayHint() | 0;
+      if (room in hints) {
+        const hintIndex = hintIndices[room];
+        const nextHintIndex = (hintIndex + 1) % hints[room].length;
+        setHintIndices({ ...hintIndices, [room]: nextHintIndex });
+      }
+      setTriggerHintUpdate(false);
+    }
+  }, [hintDisplay, hintIndices, hints, triggerHintUpdate]);
+
+  // When the "get hint" action is triggered, call this function
+  function updateHint() {
+    setTriggerHintUpdate(true);
+  }
 
   return (
     <Modal
@@ -148,7 +108,14 @@ export default function NewHintModal(): JSX.Element {
         <ModalHeader>Hint</ModalHeader>
         <ModalCloseButton />
         <ModalBody>{displayHint()}</ModalBody>
-        <ModalFooter></ModalFooter>
+        <ModalFooter>
+          <Button colorScheme='blue' mr={3} onClick={updateHint}>
+            Next Hint
+          </Button>
+          <Button variant='ghost' onClick={closeModal}>
+            Close
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

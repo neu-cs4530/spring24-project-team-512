@@ -319,6 +319,7 @@ export default class TownGameScene extends Phaser.Scene {
 
         this.coveyTownController.ourPlayer.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
 
+        this._timer?.destroy();
 
         this.coveyTownController.ourPlayer.escapeRoom = false;
         this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
