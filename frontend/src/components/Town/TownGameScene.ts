@@ -559,6 +559,50 @@ export default class TownGameScene extends Phaser.Scene {
                   'inventoryUpdated',
                   this.coveyTownController.ourPlayer.inventory,
                 );
+
+            // Create a new text object at the player's location
+            const toast = this.add.text(
+              this.coveyTownController.ourPlayer.location.x,
+              this.coveyTownController.ourPlayer.location.y,
+              'You dug up a key!',
+              { fontSize: '16px', color: '#fff' }
+            );
+
+            // Create a new tween that fades out the text object over 2 seconds
+            this.tweens.add({
+              targets: toast,
+              alpha: 0,
+              duration: 2000,
+              onComplete: () => toast.destroy(), // Destroy the text object when the tween completes
+            });
+              }
+            }
+          }
+
+          // Do the same for the other graves, but the message tells them they didnt find anything
+          for (const grave of [grave1, grave2, grave3]) {
+            if (grave.x && grave.y && grave.height && grave.width) {
+              if (
+                this.coveyTownController.ourPlayer.location.x < grave.x + grave.width &&
+                this.coveyTownController.ourPlayer.location.x > grave.x &&
+                this.coveyTownController.ourPlayer.location.y > grave.y &&
+                this.coveyTownController.ourPlayer.location.y < grave.y + grave.height
+              ) {
+                if (this._fDown?.isDown) {
+                  const toast = this.add.text(
+                    this.coveyTownController.ourPlayer.location.x,
+                    this.coveyTownController.ourPlayer.location.y,
+                    'You didn\'t find anything.',
+                    { fontSize: '16px', color: '#fff' }
+                  );
+
+                  this.tweens.add({
+                    targets: toast,
+                    alpha: 0,
+                    duration: 2000,
+                    onComplete: () => toast.destroy(),
+                  });
+                }
               }
             }
           }
