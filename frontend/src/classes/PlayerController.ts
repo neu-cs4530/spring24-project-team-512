@@ -5,6 +5,8 @@ export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
   movement: (newLocation: PlayerLocation) => void;
+  inventoryUpdated: (newInventory: Inventory) => void;
+  escapeRoomStatus: (inRoom: boolean) => void;
 };
 
 export type PlayerGameObjects = {
@@ -124,6 +126,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
         length: (this._inventory.length += 1),
         capacity: 10,
       };
+      this.emit('inventoryUpdated', this.inventory);
     }
   }
 

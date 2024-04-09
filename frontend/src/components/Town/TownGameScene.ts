@@ -296,13 +296,13 @@ export default class TownGameScene extends Phaser.Scene {
         this.coveyTownController.ourPlayer.location.y > roomReturn.y - 50 &&
         this.coveyTownController.ourPlayer.location.y < roomReturn.y + roomReturn.height + 50
       ) {
-        const gameAreaController = this.coveyTownController.gameAreas.find(
-          eachArea => eachArea.id == 'Escape Room 1',
-        );
+
         this.coveyTownController.ourPlayer.inventory = { items: [], length: 0, capacity: 10 };
-        gameAreaController?.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
+        this.coveyTownController.ourPlayer.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
 
         this.coveyTownController.ourPlayer.escapeRoom = false;
+        this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
+
       }
     }
   }
@@ -416,6 +416,7 @@ export default class TownGameScene extends Phaser.Scene {
 
     if (this.inEscapeRoom()) {
       this.coveyTownController.ourPlayer.escapeRoom = true;
+      this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
     }
     //moves the opponent around room 2
     this.moveAI();
@@ -456,16 +457,14 @@ export default class TownGameScene extends Phaser.Scene {
               this.coveyTownController.ourPlayer.location.y > room3Key.y &&
               this.coveyTownController.ourPlayer.location.y < room3Key.y + room3Key.height
             ) {
-              const gameAreaController = this.coveyTownController.gameAreas.find(
-                eachArea => eachArea.id == 'Escape Room 1',
-              );
+       
               this.coveyTownController.ourPlayer.placeItem({
                 name: 'room 3 key',
                 description: 'room 3 key',
                 tile: '',
               });
 
-              gameAreaController?.emit(
+              this.coveyTownController.ourPlayer.emit(
                 'inventoryUpdated',
                 this.coveyTownController.ourPlayer.inventory,
               );

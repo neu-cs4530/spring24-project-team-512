@@ -19,7 +19,7 @@ export type EscapeRoomEventTypes = GameEventTypes & {
   gameUpdated: () => void;
   gameEnd: () => void;
   playerChange: (newPlayer: PlayerController) => void;
-  inventoryUpdated: (newInventory: Item[]) => void;
+  // inventoryUpdated: (newInventory: Item[]) => void;
 };
 
 export default class EscapeRoomAreaController extends GameAreaController<
@@ -85,29 +85,32 @@ export default class EscapeRoomAreaController extends GameAreaController<
     if (!instanceID) {
       throw new Error(NO_GAME_STARTABLE);
     }
+    if (this._townController.players.find(player => player.escapeRoom === true) !== undefined) {
+      throw new Error('Game is currently full');
+    }
     await this._townController.sendInteractableCommand(this.id, {
       gameID: instanceID,
       type: 'SingleGame',
     });
   }
 
-  public placeItem(id: PlayerID, item: Item) {
-    if (id === this.player1?.id) {
-      if (this.player1.id === this._townController.ourPlayer.id) {
-        this.player1.inventory.items.push(item);
-        this.emit('inventoryUpdated', this.player1.inventory.items);
-      }
-      this._model.game?.state.player1Inventory?.items.push(item);
-    } else if (id === this.player2?.id) {
-      if (this.player2.id === this._townController.ourPlayer.id) {
-        this.player2.inventory.items.push(item);
-        this.emit('inventoryUpdated', this.player2.inventory.items);
-      }
-      this._model.game?.state.player2Inventory?.items.push(item);
-    } else {
-      throw new Error(PLAYER_NOT_IN_GAME_ERROR);
-    }
-  }
+  // public placeItem(id: PlayerID, item: Item) {
+  //   if (id === this.player1?.id) {
+  //     if (this.player1.id === this._townController.ourPlayer.id) {
+  //       this.player1.inventory.items.push(item);
+  //       this.emit('inventoryUpdated', this.player1.inventory.items);
+  //     }
+  //     this._model.game?.state.player1Inventory?.items.push(item);
+  //   } else if (id === this.player2?.id) {
+  //     if (this.player2.id === this._townController.ourPlayer.id) {
+  //       this.player2.inventory.items.push(item);
+  //       this.emit('inventoryUpdated', this.player2.inventory.items);
+  //     }
+  //     this._model.game?.state.player2Inventory?.items.push(item);
+  //   } else {
+  //     throw new Error(PLAYER_NOT_IN_GAME_ERROR);
+  //   }
+  // }
 
   /**
    * Returns true if the current player is a player in this game
