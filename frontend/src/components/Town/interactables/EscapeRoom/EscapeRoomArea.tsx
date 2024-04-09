@@ -95,7 +95,7 @@ export default function EscapeRoomArea({
 
   useEffect(() => {
     const updateGameState = () => {
-      console.log(gameAreaController);
+      // console.log(gameAreaController);
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
@@ -127,7 +127,6 @@ export default function EscapeRoomArea({
       gameAreaController.removeListener('gameUpdated', updateGameState);
     };
   }, [townController, gameAreaController, toast]);
-
   const inGame = gameAreaController.occupants.filter(player => player.escapeRoom === true);
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS' && inGame.length > 0) {
@@ -289,7 +288,7 @@ export default function EscapeRoomArea({
       </Button>
     );
     let gameStatusStr;
-    if (gameStatus === 'OVER') gameStatusStr = 'over';
+    if (gameStatus === 'OVER') gameStatusStr = 'Game over';
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'Waiting for players to join';
     gameStatusText = (
       <Flex gap={6} direction={'column'}>
@@ -308,10 +307,7 @@ export default function EscapeRoomArea({
       <VStack
         align='left'
         spacing={6}
-        // border='2px'
         padding={2}
-        // borderColor='gray.500'
-        // borderRadius='4px'
       >
         <Heading fontSize='xl' as='h2'>
           {gameStatusText}
