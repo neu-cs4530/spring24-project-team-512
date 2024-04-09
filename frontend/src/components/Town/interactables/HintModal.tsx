@@ -53,6 +53,14 @@ export default function NewHintModal(): JSX.Element {
     }
   }, [coveyTownController, hintDisplay]);
 
+  function getHint(room: number) {
+    if (room in hints) {
+      const roomHints = hints[room as keyof typeof hints];
+      const randomHintIndex = Math.floor(Math.random() * roomHints.length);
+      return roomHints[randomHintIndex];
+    }
+    return '';
+  }
   function displayHint(): React.ReactNode {
     let room: number;
     if (hintDisplay !== undefined) {
@@ -61,15 +69,6 @@ export default function NewHintModal(): JSX.Element {
       room = 0;
     }
     return getHint(room);
-  }
-
-  function getHint(room: number) {
-    if (room in hints) {
-      const roomHints = hints[room as keyof typeof hints];
-      const randomHintIndex = Math.floor(Math.random() * roomHints.length);
-      return roomHints[randomHintIndex];
-    }
-    return '';
   }
 
   //   const displayHint = useCallback(async () => {
