@@ -20,7 +20,7 @@ export default function NewHintModal(): JSX.Element {
 
   const isOpen = hintDisplay !== undefined;
 
-  const hints = {
+  const hints: { [key: number]: string[] } = {
     1: [
       'There are 3 statues, the combination for the lockbox is 3 digits.',
       'Pay attention to the legs of the statues',
