@@ -1,4 +1,4 @@
-import { Button, Container, List, ListItem, useToast } from '@chakra-ui/react';
+import { Button, Container, Flex, Heading, List, ListItem, VStack, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import PlayerController from '../../../../classes/PlayerController';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
@@ -6,6 +6,7 @@ import useTownController from '../../../../hooks/useTownController';
 import { GameStatus, InteractableID, Item } from '../../../../types/CoveyTownSocket';
 import GameAreaInteractable from '../GameArea';
 import EscapeRoomAreaController from '../../../../classes/interactable/EscapeRoomAreaController';
+import { Box } from '@material-ui/core';
 /**
  * The TicTacToeArea component renders the TicTacToe game area.
  * It renders the current state of the area, optionally allowing the player to join the game.
@@ -121,7 +122,11 @@ export default function EscapeRoomArea({
   const inGame = gameAreaController.occupants.filter(player => player.escapeRoom === true);
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS' && inGame.length > 0) {
-    gameStatusText = <>Game in progress, current time: {time}</>;
+    gameStatusText = (
+    <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
+      Game in progress, current time: {time}
+    </Box>
+    );
     // if(areBothPlayerReady()) {
     gameArea?.movePlayer(2065, 1800);
     // }
@@ -139,6 +144,7 @@ export default function EscapeRoomArea({
     // } else {
     const startGameButton = (
       <Button
+        colorScheme='blue'
         onClick={async () => {
           setJoiningGame(true);
           try {
@@ -158,7 +164,16 @@ export default function EscapeRoomArea({
         Start Two Player Game
       </Button>
     );
-    gameStatusText = <b>Press to play multiplayer. {startGameButton}</b>;
+    gameStatusText = (
+      <Flex gap={6} direction={'column'}>
+        <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
+          Play multiplayer game
+        </Box>
+        <Box>
+        {startGameButton}
+        </Box>
+      </Flex>
+    )
     // }
   } else if (
     gameStatus == 'WAITING_FOR_PLAYERS' &&
@@ -166,6 +181,7 @@ export default function EscapeRoomArea({
   ) {
     const singleGameButton = (
       <Button
+        colorScheme='blue'
         onClick={async () => {
           setJoiningGame(true);
           try {
@@ -182,7 +198,7 @@ export default function EscapeRoomArea({
         }}
         isLoading={joiningGame}
         disabled={joiningGame}>
-        Single Player
+        Play Single Player
       </Button>
     );
     const joinGameButton = (
@@ -208,14 +224,20 @@ export default function EscapeRoomArea({
       </Button>
     );
     gameStatusText = (
-      <b>
-        Press to play single player, or wait for one more player. {singleGameButton}
-        {joinGameButton}
-      </b>
+      <Flex gap={6} direction={'column'}>
+        <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
+          Play single player game, or wait for another player
+        </Box>
+        <Box>
+        {singleGameButton} 
+        {/* {joinGameButton} */}
+        </Box>
+      </Flex>
     );
   } else {
     const joinGameButton = (
       <Button
+        colorScheme='blue'
         onClick={async () => {
           setJoiningGame(true);
           try {
@@ -261,21 +283,37 @@ export default function EscapeRoomArea({
     );
     let gameStatusStr;
     if (gameStatus === 'OVER') gameStatusStr = 'over';
-    else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
+    else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'Waiting for players to join';
     gameStatusText = (
-      <b>
-        Game {gameStatusStr} {joinGameButton} {description}
-      </b>
+      <Flex gap={6} direction={'column'}>
+        <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
+          {gameStatusStr}
+        </Box>
+        <Box>
+          {joinGameButton} {description}
+        </Box>
+      </Flex>
     );
   }
 
   return (
     <Container>
-      {gameStatusText}
+      <VStack
+      align='left'
+      spacing={6}
+      // border='2px'
+      padding={2}
+      // borderColor='gray.500'
+      // borderRadius='4px'
+      >
+      <Heading fontSize='xl' as='h2'>
+        {gameStatusText}
+      </Heading>
       <List aria-label='list of players in the game'>
         <ListItem>Player 1: {p1?.userName || '(No player yet!)'}</ListItem>
         <ListItem>Player 2: {p2?.userName || '(No player yet!)'}</ListItem>
       </List>
+    </VStack>
     </Container>
   );
 }

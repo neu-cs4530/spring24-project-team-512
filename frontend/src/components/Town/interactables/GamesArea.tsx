@@ -63,40 +63,8 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
   }, [townController, gameAreaController]);
   return (
     <>
-      <Accordion allowToggle>
-        <AccordionItem>
-          <Heading as='h3'>
-            <AccordionButton>
-              <Box flex='1' textAlign='left'>
-                Leaderboard
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel>
-              <Leaderboard results={history} />
-            </AccordionPanel>
-          </Heading>
-        </AccordionItem>
-        <AccordionItem>
-          <Heading as='h3'>
-            <AccordionButton>
-              <Box as='span' flex='1' textAlign='left'>
-                Current Observers
-                <AccordionIcon />
-              </Box>
-            </AccordionButton>
-          </Heading>
-          <AccordionPanel>
-            <List aria-label='list of observers in the game'>
-              {observers.map(player => {
-                return <ListItem key={player.id}>{player.userName}</ListItem>;
-              })}
-            </List>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
-      <Flex>
-        <Box>
+      <Flex gap={2} mb={'2'}>
+        <Box border='1px' borderColor={'#ccc'} borderRadius='5px' sx={{ width: '60%' }}>
           {gameAreaController.toInteractableAreaModel().type === 'ConnectFourArea' ? (
             <ConnectFourArea interactableID={interactableID} />
           ) : gameAreaController.toInteractableAreaModel().type === 'TicTacToeArea' ? (
@@ -107,9 +75,9 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
             <>{INVALID_GAME_AREA_TYPE_MESSAGE}</>
           )}
         </Box>
-        <Box
+        <Box border='1px' borderColor={'#ccc'} borderRadius='5px' sx={{ width: '40%' }}
           style={{
-            height: '400px',
+            height: '250px',
             overflowY: 'scroll',
           }}>
           <div
@@ -122,6 +90,39 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
           </div>
         </Box>
       </Flex>
+      <Accordion allowToggle border='1px' borderColor={'#ccc'} borderRadius='5px'>
+        <AccordionItem border={'none'}>
+          <Heading as='h3'>
+            <AccordionButton>
+              <Box flex='1' textAlign='left'>
+                Leaderboard
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+            <AccordionPanel>
+              <Leaderboard results={history} />
+            </AccordionPanel>
+          </Heading>
+        </AccordionItem>
+        <AccordionItem >
+          <Heading as='h3'>
+            <AccordionButton>
+              <Box flex='1' textAlign='left'>
+                Current Observers
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </Heading>
+          <AccordionPanel>
+            <List aria-label='list of observers in the game'>
+              {observers.map(player => {
+                return <ListItem key={player.id}>{player.userName}</ListItem>;
+              })}
+            </List>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+      
     </>
   );
 }
@@ -143,12 +144,14 @@ export default function GameAreaWrapper(): JSX.Element {
   }, [townController, gameArea]);
   if (gameArea) {
     return (
-      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false} size='xl'>
+      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false} size='3xl'>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{gameArea.name}</ModalHeader>
+          <ModalHeader>
+            <Heading as='h2'>{gameArea.name}</Heading>
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody p={5} pt={'8px !important'}>
             <GameArea interactableID={gameArea.id} />
           </ModalBody>
         </ModalContent>
