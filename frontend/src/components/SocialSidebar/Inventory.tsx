@@ -1,16 +1,7 @@
 import { Box, Heading, ListItem, OrderedList, Tooltip, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import {
-  useActiveInteractableAreas,
-  useInteractable,
-  useInteractableAreaController,
-  usePlayers,
-} from '../../classes/TownController';
 import useTownController from '../../hooks/useTownController';
-import PlayerName from './PlayerName';
-import { InteractableID, Inventory, Item } from '../../types/CoveyTownSocket';
-import EscapeRoomAreaController from '../../classes/interactable/EscapeRoomAreaController';
-import GameAreaInteractable from '../Town/interactables/GameArea';
+import { Inventory } from '../../types/CoveyTownSocket';
 
 /**
  * Lists the current players in the town, along with the current town's name and ID
@@ -18,22 +9,13 @@ import GameAreaInteractable from '../Town/interactables/GameArea';
  * See relevant hooks: `usePlayersInTown` and `useCoveyAppState`
  *
  */
-export default function InventoryDisplay({
-  interactableID,
-}: {
-  interactableID: InteractableID;
-}): JSX.Element {
+export default function InventoryDisplay(): JSX.Element {
   //   const players = usePlayers();
 
   const townController = useTownController();
-  const escapeRoomArea = useActiveInteractableAreas().filter(
-    area => area.type === 'EscapeRoomArea',
-  )[0];
 
-  const gameArea = useInteractable<GameAreaInteractable>('gameArea');
-
-  const gameAreaController =
-    useInteractableAreaController<EscapeRoomAreaController>(interactableID);
+  // const gameAreaController =
+  //   useInteractableAreaController<EscapeRoomAreaController>(interactableID);
 
   const player = townController.ourPlayer;
 
@@ -43,12 +25,12 @@ export default function InventoryDisplay({
     const updateInventory = () => {
       setInventory(player.inventory);
     };
-    gameAreaController.addListener('inventoryUpdated', updateInventory);
+    player.addListener('inventoryUpdated', updateInventory);
 
     return () => {
-      gameAreaController.removeListener('inventoryUpdated', updateInventory);
+      player.removeListener('inventoryUpdated', updateInventory);
     };
-  }, [gameAreaController, player]);
+  }, [player]);
 
   // const sorted = players.concat([]);
   // sorted.sort((p1, p2) =>

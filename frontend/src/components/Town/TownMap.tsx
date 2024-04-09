@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Phaser from 'phaser';
 import { useEffect } from 'react';
 import useTownController from '../../hooks/useTownController';
@@ -16,6 +16,7 @@ import Instruction from '../SocialSidebar/Instruction';
 import InventoryDisplay from '../SocialSidebar/Inventory';
 import { useActiveInteractableAreas, useInteractable } from '../../classes/TownController';
 import GameAreaInteractable from './interactables/GameArea';
+import { Inventory } from '../../types/CoveyTownSocket';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     chatWindowContainer: {
@@ -49,8 +50,21 @@ export default function TownMap(): JSX.Element {
   const coveyTownController = useTownController();
   const { isChatWindowOpen } = useChatContext();
   const classes = useStyles();
+  const player = coveyTownController.ourPlayer;
+  // const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
-  const gameArea = useInteractable<GameAreaInteractable>('gameArea');
+  const [escapeRoom, setStatus] = useState<boolean>(player.escapeRoom);
+
+  useEffect(() => {
+    const updateStatus = () => {
+      setStatus(player.escapeRoom);
+    };
+    player.addListener('escapeRoomStatus', updateStatus);
+
+    return () => {
+      player.removeListener('escapeRoomStatus', updateStatus);
+    };
+  }, [player]);
 
   const DisplayInventory = () => {
     if (
@@ -58,23 +72,22 @@ export default function TownMap(): JSX.Element {
         area => area.toInteractableAreaModel().type === 'EscapeRoomArea',
       ) !== undefined
     ) {
-      console.log(gameArea);
       // console.log('game area id', gameArea.id);
 
-      return <InventoryDisplay interactableID={'Escape Room 1'} />;
+      return <InventoryDisplay />;
     } else {
       return;
     }
   };
   function DisplaySideBar(): React.ReactNode {
-    if (coveyTownController.ourPlayer.escapeRoom === false) {
+    if (escapeRoom === false) {
       return <SocialSidebar />;
     } else {
       return;
     }
   }
   function DisplayInstruction(): React.ReactNode {
-    if (coveyTownController.ourPlayer.escapeRoom === true) {
+    if (escapeRoom === true) {
       return <Instruction />;
     } else {
       return;

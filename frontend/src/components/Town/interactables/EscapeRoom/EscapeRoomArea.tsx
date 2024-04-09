@@ -195,7 +195,7 @@ export default function EscapeRoomArea({
     );
     gameStatusText = (
       <b>
-        Press to play single player, or wait for one more player. {singleGameButton}.
+        Press to play single player, or wait for one more player. {singleGameButton}
         {joinGameButton}
       </b>
     );
@@ -250,7 +250,7 @@ export default function EscapeRoomArea({
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
     gameStatusText = (
       <b>
-        Game {gameStatusStr}. {joinGameButton}. {description}
+        Game {gameStatusStr}. {joinGameButton} {description}
       </b>
     );
   }
