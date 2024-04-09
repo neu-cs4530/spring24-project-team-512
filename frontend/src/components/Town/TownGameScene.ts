@@ -82,6 +82,12 @@ export default class TownGameScene extends Phaser.Scene {
 
   private _xDown?: Phaser.Input.Keyboard.Key;
 
+  private _realTime: number;
+
+  private _timer?: Phaser.Time.TimerEvent;
+
+  private _timerText?: Phaser.GameObjects.Text;
+
   /**
    * Layers that the player can collide with.
    */
@@ -114,6 +120,13 @@ export default class TownGameScene extends Phaser.Scene {
     this._resourcePathPrefix = resourcePathPrefix;
     this.coveyTownController = coveyTownController;
     this._players = this.coveyTownController.players;
+    this._realTime = 0;
+  }
+
+  updateTime() {
+    // Update timer text with elapsed time
+    this._realTime += (this._timer === undefined ? 0 : this._timer.getElapsed() / 1000);
+    this._timerText?.setText(this._realTime?.toFixed(2));
   }
 
   preload() {
@@ -301,13 +314,15 @@ export default class TownGameScene extends Phaser.Scene {
         this.coveyTownController.ourPlayer.location.y > roomReturn.y - 50 &&
         this.coveyTownController.ourPlayer.location.y < roomReturn.y + roomReturn.height + 50
       ) {
-        const gameAreaController = this.coveyTownController.gameAreas.find(
-          eachArea => eachArea.id == 'Escape Room 1',
-        );
+
         this.coveyTownController.ourPlayer.inventory = { items: [], length: 0, capacity: 10 };
-        gameAreaController?.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
+
+        this.coveyTownController.ourPlayer.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
+
 
         this.coveyTownController.ourPlayer.escapeRoom = false;
+        this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
+
       }
     }
   }
@@ -400,6 +415,19 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   update() {
+    if (this.inEscapeRoom() && this._timer === undefined) {
+      this._timerText = this.add.text(700, 25, '0', { fontFamily: 'Arial', fontSize: 24, color: '#ffffff' })
+      .setScrollFactor(0)
+      .setDepth(30);
+      
+      // Create timer event
+      this._timer = this.time.addEvent({
+          delay: 10,
+          callback: this.updateTime,
+          callbackScope: this,
+          loop: true
+      });
+    }
 
     // Check if player is colliding with shovelsprite 
     if (this._shovelSprite) {
@@ -456,6 +484,7 @@ export default class TownGameScene extends Phaser.Scene {
 
     if (this.inEscapeRoom()) {
       this.coveyTownController.ourPlayer.escapeRoom = true;
+      this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
     }
     //moves the opponent around room 2
     this.moveAI();
@@ -496,16 +525,14 @@ export default class TownGameScene extends Phaser.Scene {
               this.coveyTownController.ourPlayer.location.y > room3Key.y &&
               this.coveyTownController.ourPlayer.location.y < room3Key.y + room3Key.height
             ) {
-              const gameAreaController = this.coveyTownController.gameAreas.find(
-                eachArea => eachArea.id == 'Escape Room 1',
-              );
+       
               this.coveyTownController.ourPlayer.placeItem({
                 name: 'room 3 key',
                 description: 'room 3 key',
                 tile: '',
               });
 
-              gameAreaController?.emit(
+              this.coveyTownController.ourPlayer.emit(
                 'inventoryUpdated',
                 this.coveyTownController.ourPlayer.inventory,
               );
@@ -770,6 +797,7 @@ export default class TownGameScene extends Phaser.Scene {
   }
 
   create() {
+
     this._map = this.make.tilemap({ key: 'map' });
 
     /* Parameters are the name you gave the tileset in Tiled and then the key of the
