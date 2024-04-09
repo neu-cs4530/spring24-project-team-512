@@ -1,4 +1,13 @@
-import { Button, Container, Flex, Heading, List, ListItem, VStack, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  Container,
+  Flex,
+  Heading,
+  List,
+  ListItem,
+  VStack,
+  useToast,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import PlayerController from '../../../../classes/PlayerController';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
@@ -123,9 +132,9 @@ export default function EscapeRoomArea({
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS' && inGame.length > 0) {
     gameStatusText = (
-    <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
-      Game in progress, current time: {time}
-    </Box>
+      <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
+        Game in progress, current time: {time}
+      </Box>
     );
     // if(areBothPlayerReady()) {
     gameArea?.movePlayer(2065, 1800);
@@ -169,11 +178,9 @@ export default function EscapeRoomArea({
         <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
           Play multiplayer game
         </Box>
-        <Box>
-        {startGameButton}
-        </Box>
+        <Box>{startGameButton}</Box>
       </Flex>
-    )
+    );
     // }
   } else if (
     gameStatus == 'WAITING_FOR_PLAYERS' &&
@@ -229,8 +236,8 @@ export default function EscapeRoomArea({
           Play single player game, or wait for another player
         </Box>
         <Box>
-        {singleGameButton} 
-        {/* {joinGameButton} */}
+          {singleGameButton}
+          {/* {joinGameButton} */}
         </Box>
       </Flex>
     );
@@ -299,21 +306,21 @@ export default function EscapeRoomArea({
   return (
     <Container>
       <VStack
-      align='left'
-      spacing={6}
-      // border='2px'
-      padding={2}
-      // borderColor='gray.500'
-      // borderRadius='4px'
+        align='left'
+        spacing={6}
+        // border='2px'
+        padding={2}
+        // borderColor='gray.500'
+        // borderRadius='4px'
       >
-      <Heading fontSize='xl' as='h2'>
-        {gameStatusText}
-      </Heading>
-      <List aria-label='list of players in the game'>
-        <ListItem>Player 1: {p1?.userName || '(No player yet!)'}</ListItem>
-        <ListItem>Player 2: {p2?.userName || '(No player yet!)'}</ListItem>
-      </List>
-    </VStack>
+        <Heading fontSize='xl' as='h2'>
+          {gameStatusText}
+        </Heading>
+        <List aria-label='list of players in the game'>
+          <ListItem>Player 1: {p1?.userName || '(No player yet!)'}</ListItem>
+          <ListItem>Player 2: {p2?.userName || '(No player yet!)'}</ListItem>
+        </List>
+      </VStack>
     </Container>
   );
 }

@@ -75,7 +75,11 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
             <>{INVALID_GAME_AREA_TYPE_MESSAGE}</>
           )}
         </Box>
-        <Box border='1px' borderColor={'#ccc'} borderRadius='5px' sx={{ width: '40%' }}
+        <Box
+          border='1px'
+          borderColor={'#ccc'}
+          borderRadius='5px'
+          sx={{ width: '40%' }}
           style={{
             height: '250px',
             overflowY: 'scroll',
@@ -104,7 +108,7 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
             </AccordionPanel>
           </Heading>
         </AccordionItem>
-        <AccordionItem >
+        <AccordionItem>
           <Heading as='h3'>
             <AccordionButton>
               <Box flex='1' textAlign='left'>
@@ -122,7 +126,6 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
-      
     </>
   );
 }
