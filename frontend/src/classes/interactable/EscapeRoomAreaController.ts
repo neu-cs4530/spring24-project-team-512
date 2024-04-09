@@ -13,12 +13,14 @@ import GameAreaController, {
   NO_GAME_STARTABLE,
   PLAYER_NOT_IN_GAME_ERROR,
 } from './GameAreaController';
+import { useState } from 'react';
 
 export type EscapeRoomEventTypes = GameEventTypes & {
   gameStart: () => void;
   gameUpdated: () => void;
   gameEnd: () => void;
   playerChange: (newPlayer: PlayerController) => void;
+  // escapeStatus: (status: boolean) => void;
   // inventoryUpdated: (newInventory: Item[]) => void;
 };
 
@@ -124,9 +126,9 @@ export default class EscapeRoomAreaController extends GameAreaController<
   }
 
   /**
-   * Returns true if the game is not empty or the game is not waiting for players
+   * Returns true if there is a player in the escape room
    */
   public isActive(): boolean {
-    return !this.isEmpty() || this.status !== 'WAITING_FOR_PLAYERS';
+    return this.status === 'IN_PROGRESS';
   }
 }

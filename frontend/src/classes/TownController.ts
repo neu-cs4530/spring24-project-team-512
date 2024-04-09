@@ -112,6 +112,8 @@ export type TownEvents = {
    * @param obj the interactable that is being interacted with
    */
   interact: <T extends Interactable>(typeName: T['name'], obj: T) => void;
+
+  escapeRoomEntered: (status: boolean) => void;
 };
 
 /**

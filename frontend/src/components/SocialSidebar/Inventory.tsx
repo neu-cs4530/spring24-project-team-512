@@ -1,4 +1,4 @@
-import { Box, Heading, ListItem, OrderedList, Tooltip, VStack } from '@chakra-ui/react';
+import { Box, Heading, ListItem, OrderedList, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import useTownController from '../../hooks/useTownController';
 import { Inventory } from '../../types/CoveyTownSocket';
@@ -26,11 +26,12 @@ export default function InventoryDisplay(): JSX.Element {
       setInventory(player.inventory);
     };
     player.addListener('inventoryUpdated', updateInventory);
-
+    townController.addListener('escapeRoomEntered', updateInventory);
     return () => {
       player.removeListener('inventoryUpdated', updateInventory);
+      townController.removeListener('escapeRoomEntered', updateInventory);
     };
-  }, [player]);
+  }, [player, townController]);
 
   // const sorted = players.concat([]);
   // sorted.sort((p1, p2) =>
