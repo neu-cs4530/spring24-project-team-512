@@ -323,6 +323,9 @@ export default class TownGameScene extends Phaser.Scene {
         this.coveyTownController.ourPlayer.escapeRoom = false;
         this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
 
+        const gameAreaController = this.coveyTownController.gameAreas.find(area => area.id === 'Escape Room 1');
+        console.log('id', gameAreaController?.id);
+        gameAreaController?.leaveGame();
       }
     }
   }

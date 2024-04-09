@@ -57,6 +57,20 @@ export default function EscapeRoomArea({
 
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
 
+  // const ourPlayer = townController.ourPlayer;
+
+  // const [escapeRoom, setEscapeRoom] = useState<boolean>(ourPlayer.escapeRoom);
+
+  // useEffect(() => {
+  //   const updateEscapeRoom = () => {
+  //     setEscapeRoom(ourPlayer.escapeRoom);
+  //   };
+  //   gameAreaController.addListener('escapeStatus', updateEscapeRoom);
+
+  //   return () => {
+  //     gameAreaController.removeListener('escapeStatus', updateEscapeRoom);
+  //   };
+  // }, [ourPlayer, gameAreaController]);
   // const isPlayer1Ready = () => {
   //   const gameState = gameAreaController.toInteractableAreaModel().game?.state;
   //   return gameState?.player1Ready;
@@ -250,7 +264,7 @@ export default function EscapeRoomArea({
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
     gameStatusText = (
       <b>
-        Game {gameStatusStr}. {joinGameButton} {description}
+        Game {gameStatusStr} {joinGameButton} {description}
       </b>
     );
   }

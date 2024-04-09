@@ -67,11 +67,12 @@ export default function TownMap(): JSX.Element {
   }, [player]);
 
   const DisplayInventory = () => {
-    if (
-      useActiveInteractableAreas().find(
-        area => area.toInteractableAreaModel().type === 'EscapeRoomArea',
-      ) !== undefined
-    ) {
+    // if (
+    //   useActiveInteractableAreas().find(
+    //     area => area.toInteractableAreaModel().type === 'EscapeRoomArea',
+    //   ) !== undefined
+    // ) {
+    if (escapeRoom) {
       // console.log('game area id', gameArea.id);
 
       return <InventoryDisplay />;
@@ -80,14 +81,14 @@ export default function TownMap(): JSX.Element {
     }
   };
   function DisplaySideBar(): React.ReactNode {
-    if (escapeRoom === false) {
+    if (!escapeRoom) {
       return <SocialSidebar />;
     } else {
       return;
     }
   }
   function DisplayInstruction(): React.ReactNode {
-    if (escapeRoom === true) {
+    if (escapeRoom) {
       return <Instruction />;
     } else {
       return;
