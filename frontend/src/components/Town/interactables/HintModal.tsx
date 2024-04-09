@@ -12,6 +12,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
 import HintAreaInteractable from './HintArea';
+import { get } from 'lodash';
 
 export default function NewHintModal(): JSX.Element {
   const coveyTownController = useTownController();
@@ -22,6 +23,21 @@ export default function NewHintModal(): JSX.Element {
   //   useInteractableAreaController<EscapeRoomAreaController>(interactableID);
 
   const isOpen = hintDisplay !== undefined;
+
+  const hints = {
+    1: ['Count the Legs', 'The key to open the door is in the lockbox.'],
+    2: [
+      'Dont forget about your shrinking power!',
+      'Youll need a key to unlock the exit door.',
+      'The key is near the right edge of the room.',
+      'Avoid any clones of yourself at all cost...',
+    ],
+    3: [
+      'Youll a need a tool to find the key',
+      'The key is hidden within the dirt.',
+      'The man who once held the key was blind.',
+    ],
+  };
 
   useEffect(() => {
     if (hintDisplay) {
@@ -44,15 +60,16 @@ export default function NewHintModal(): JSX.Element {
     } else {
       room = 0;
     }
-    if (room === 1) {
-      return 'Count the legs';
+    return getHint(room);
+  }
+
+  function getHint(room: number) {
+    if (room in hints) {
+      const roomHints = hints[room as keyof typeof hints];
+      const randomHintIndex = Math.floor(Math.random() * roomHints.length);
+      return roomHints[randomHintIndex];
     }
-    if (room === 2) {
-      return 'Exit is near the top of the screen';
-    }
-    if (room === 3) {
-      return 'Dig up grave 2';
-    }
+    return '';
   }
 
   //   const displayHint = useCallback(async () => {
