@@ -343,6 +343,11 @@ export default class TownGameScene extends Phaser.Scene {
           this.coveyTownController.ourPlayer.inventory.items.find(
             item => item.name === 'room 3 key',
           ) === undefined &&
+          override === undefined) ||
+        (this.inRoom3() &&
+          this.coveyTownController.ourPlayer.inventory.items.find(
+            item => item.name === 'room 4 key',
+          ) === undefined &&
           override === undefined)
       ) {
         return;
@@ -506,6 +511,58 @@ export default class TownGameScene extends Phaser.Scene {
               );
             }
           }
+
+          
+          const grave1 = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Grave1',
+          ) as Phaser.Types.Tilemaps.TiledObject;
+          const grave2 = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Grave2',
+          ) as Phaser.Types.Tilemaps.TiledObject;
+          const grave3 = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Grave3',
+          ) as Phaser.Types.Tilemaps.TiledObject;
+          const grave4 = this.map.findObject(
+            'Objects',
+            obj => obj.name === 'Grave4',
+          ) as Phaser.Types.Tilemaps.TiledObject;
+
+          // If the player is standing on on a grave, has the shovel, and presses F, they dig
+          // If they dig on grave4, they get the room4key
+
+          if (grave4.x && grave4.y && grave4.height && grave4.width) {
+            if (
+              this.coveyTownController.ourPlayer.location.x < grave4.x + grave4.width &&
+              this.coveyTownController.ourPlayer.location.x > grave4.x &&
+              this.coveyTownController.ourPlayer.location.y > grave4.y &&
+              this.coveyTownController.ourPlayer.location.y < grave4.y + grave4.height
+            ) {
+              if (
+                this._fDown?.isDown &&
+                this.coveyTownController.ourPlayer.inventory.items.find(
+                  item => item.name === 'shovel',
+                ) !== undefined
+              ) {
+                const gameAreaController = this.coveyTownController.gameAreas.find(
+                  eachArea => eachArea.id == 'Escape Room 1',
+                );
+                this.coveyTownController.ourPlayer.placeItem({
+                  name: 'room 4 key',
+                  description: 'room 4 key',
+                  tile: '',
+                });
+
+                gameAreaController?.emit(
+                  'inventoryUpdated',
+                  this.coveyTownController.ourPlayer.inventory,
+                );
+              }
+            }
+          }
+
 
           if (player.inventory.items.find(item => item.name === 'basement key') !== undefined) {
             player.completed = true;
