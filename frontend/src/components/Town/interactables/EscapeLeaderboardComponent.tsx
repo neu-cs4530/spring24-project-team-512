@@ -24,8 +24,6 @@ export default function EscapeLeaderboardComponent(): JSX.Element {
     async function getData() {
       const data = await getAllRows();
       if (data) {
-        console.log('got data');
-        console.log(data.length);
         if (data.length > 0) {
           setRows(data);
         }
@@ -33,20 +31,27 @@ export default function EscapeLeaderboardComponent(): JSX.Element {
     }
     getData();
   }, []);
+  const ourRows = rows.sort(
+    (a, b) =>
+      (a.completion_time === null ? 0 : a.completion_time) -
+      (b.completion_time === null ? 1 : b.completion_time),
+  );
   return (
     <Table>
       <Thead>
         <Tr>
+          <th>Rank</th>
           <th>Player</th>
           <th>Time</th>
         </Tr>
       </Thead>
       <Tbody>
-        {rows.map(record => {
+        {ourRows.map((record, index) => {
           return (
             <Tr key={record.covey_name}>
+              <Td>{index + 1}</Td>
               <Td>{record.covey_name}</Td>
-              <Td>{record.completion_time}</Td>
+              <Td>{record.completion_time?.toFixed(2) + 's'}</Td>
             </Tr>
           );
         })}

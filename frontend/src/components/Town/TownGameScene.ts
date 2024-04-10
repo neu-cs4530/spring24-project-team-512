@@ -14,6 +14,7 @@ import PopUp from './interactables/PopUp';
 import KeyBox from './interactables/KeyBox';
 import HintArea from './interactables/HintArea';
 import EscapeLeaderboard from './interactables/EscapeLeaderboard';
+import { addTime } from './EscapeRoomDB';
 
 // Still not sure what the right type is here... "Interactable" doesn't do it
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -318,18 +319,20 @@ export default class TownGameScene extends Phaser.Scene {
         this.coveyTownController.ourPlayer.location.y < roomReturn.y + roomReturn.height + 50
       ) {
 
-        this.coveyTownController.ourPlayer.inventory = { items: [], length: 0, capacity: 10 };
-
-        this.coveyTownController.ourPlayer.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
-
-        this._timer?.destroy();
-
         this.coveyTownController.ourPlayer.escapeRoom = false;
         this.coveyTownController.ourPlayer.emit('escapeRoomStatus', this.coveyTownController.ourPlayer.escapeRoom)
 
+        this._timer?.destroy();
+        this._timerText?.destroy();
+
         if (this.coveyTownController.ourPlayer.inventory.items.find(item => item.name === 'basement key')) {
           this.coveyTownController.ourPlayer.completed = true;
+          addTime(this.coveyTownController.ourPlayer.userName, this._realTime);
         }
+
+        this.coveyTownController.ourPlayer.inventory = { items: [], length: 0, capacity: 10 };
+
+        this.coveyTownController.ourPlayer.emit('inventoryUpdated', this.coveyTownController.ourPlayer.inventory);
 
         const gameAreaController = this.coveyTownController.gameAreas.find(area => area.id === 'Escape Room 1');
         gameAreaController?.leaveGame();
