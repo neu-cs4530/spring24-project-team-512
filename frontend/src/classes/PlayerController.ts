@@ -119,11 +119,14 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   public placeItem(item: Item): void {
-    if (this._inventory.items.find(itemi => itemi.name == item.name) === undefined) {
+    if (
+      this._inventory.items.find(itemi => itemi.name == item.name) === undefined &&
+      this._inventory.length < this._inventory.capacity
+    ) {
       this._inventory.length += 1;
       this._inventory = {
         items: [...this._inventory.items, item],
-        length: (this._inventory.length += 1),
+        length: this._inventory.length,
         capacity: 10,
       };
       this.emit('inventoryUpdated', this.inventory);
