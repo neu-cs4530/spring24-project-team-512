@@ -29,6 +29,12 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private _completed: boolean;
 
+  private _twoPlayer: boolean;
+
+  private _singlePlayer: boolean;
+
+  // private _twoPlayer: boolean;
+
   constructor(id: string, userName: string, location: PlayerLocation) {
     super();
     this._id = id;
@@ -37,6 +43,9 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._inventory = { capacity: 10, length: 0, items: [] };
     this._inEscapeRoom = false;
     this._completed = false;
+    this._twoPlayer = false;
+    this._singlePlayer = false;
+    // this._twoPlayer = false;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -55,6 +64,22 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   set escapeRoom(inRoom: boolean) {
     this._inEscapeRoom = inRoom;
+  }
+
+  get twoPlayer(): boolean {
+    return this._twoPlayer;
+  }
+
+  set twoPlayer(option: boolean) {
+    this._twoPlayer = option;
+  }
+
+  get singlePlayer(): boolean {
+    return this._singlePlayer;
+  }
+
+  set singlePlayer(option: boolean) {
+    this._singlePlayer = option;
   }
 
   get completed(): boolean {
@@ -133,11 +158,8 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     }
   }
 
-  // updateInventory() {
-  //   const gameController = useInteractableAreaController<EscapeRoomAreaController>('Escape Room 1');
-  // }
-
   static fromPlayerModel(modelPlayer: PlayerModel): PlayerController {
     return new PlayerController(modelPlayer.id, modelPlayer.userName, modelPlayer.location);
   }
 }
+
