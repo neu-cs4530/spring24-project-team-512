@@ -1,10 +1,6 @@
-import { Console } from 'console';
 import {
-  BOARD_POSITION_NOT_VALID_MESSAGE,
   GAME_FULL_MESSAGE,
-  GAME_NOT_IN_PROGRESS_MESSAGE,
   GAME_NOT_STARTABLE_MESSAGE,
-  MOVE_NOT_YOUR_TURN_MESSAGE,
   PLAYER_ALREADY_IN_GAME_MESSAGE,
   PLAYER_NOT_IN_GAME_MESSAGE,
 } from '../../lib/InvalidParametersError';
@@ -12,7 +8,6 @@ import { createPlayerForTesting } from '../../TestUtils';
 
 import EscapeRoomGame from './EscapeRoomGame';
 
-const logger = new Console(process.stdout, process.stderr);
 /**
  * A helper function to apply a pattern of moves to a game.
  * The pattern is a 2-d array of Y, R or _.

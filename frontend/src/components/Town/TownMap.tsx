@@ -14,10 +14,6 @@ import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import Instruction from '../SocialSidebar/Instruction';
 import InventoryDisplay from '../SocialSidebar/Inventory';
-import { useActiveInteractableAreas, useInteractable } from '../../classes/TownController';
-import GameAreaInteractable from './interactables/GameArea';
-import { Inventory } from '../../types/CoveyTownSocket';
-import EscapeLeaderboardComponent from './interactables/EscapeLeaderboardComponent';
 import NewEscapeLBModal from './interactables/NewEscapeLBModal';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

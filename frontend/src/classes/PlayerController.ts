@@ -31,10 +31,6 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private _twoPlayer: boolean;
 
-  private _singlePlayer: boolean;
-
-  // private _twoPlayer: boolean;
-
   constructor(id: string, userName: string, location: PlayerLocation) {
     super();
     this._id = id;
@@ -44,8 +40,6 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._inEscapeRoom = false;
     this._completed = false;
     this._twoPlayer = false;
-    this._singlePlayer = false;
-    // this._twoPlayer = false;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -67,19 +61,11 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   get twoPlayer(): boolean {
-    return this._twoPlayer;
+    return this._inEscapeRoom;
   }
 
-  set twoPlayer(option: boolean) {
-    this._twoPlayer = option;
-  }
-
-  get singlePlayer(): boolean {
-    return this._singlePlayer;
-  }
-
-  set singlePlayer(option: boolean) {
-    this._singlePlayer = option;
+  set twoPlayer(status: boolean) {
+    this._twoPlayer = status;
   }
 
   get completed(): boolean {
@@ -162,4 +148,3 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     return new PlayerController(modelPlayer.id, modelPlayer.userName, modelPlayer.location);
   }
 }
-

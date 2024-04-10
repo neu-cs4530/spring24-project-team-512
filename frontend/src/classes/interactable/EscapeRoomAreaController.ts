@@ -1,19 +1,6 @@
-import _ from 'lodash';
-import {
-  EscapeRoomGameState,
-  GameArea,
-  GameStatus,
-  Inventory,
-  Item,
-  PlayerID,
-} from '../../types/CoveyTownSocket';
+import { EscapeRoomGameState, GameStatus } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
-import GameAreaController, {
-  GameEventTypes,
-  NO_GAME_STARTABLE,
-  PLAYER_NOT_IN_GAME_ERROR,
-} from './GameAreaController';
-import { useState } from 'react';
+import GameAreaController, { GameEventTypes, NO_GAME_STARTABLE } from './GameAreaController';
 
 export type EscapeRoomEventTypes = GameEventTypes & {
   gameStart: () => void;

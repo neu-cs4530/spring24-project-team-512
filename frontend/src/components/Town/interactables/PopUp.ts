@@ -1,7 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { BoundingBox } from '../../../types/CoveyTownSocket';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
-import useTownController from '../../../hooks/useTownController';
 export default class PopUpArea extends Interactable {
   private _infoTextBox?: Phaser.GameObjects.Text;
 

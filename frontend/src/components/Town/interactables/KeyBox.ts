@@ -1,6 +1,4 @@
-import { BoundingBox, Item, PlayerID } from '../../../types/CoveyTownSocket';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
-import NewKeyBoxModal from './NewKeyBoxModal';
 export default class KeyBox extends Interactable {
   private _infoTextBox?: Phaser.GameObjects.Text;
 

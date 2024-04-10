@@ -1,4 +1,3 @@
-import { useInteractableAreaController } from '../../../classes/TownController';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 
 export default class GameArea extends Interactable {

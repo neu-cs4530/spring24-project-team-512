@@ -19,16 +19,6 @@ export default class InventoryImpl {
     }
   }
 
-  removeItem(itemName: string): void {
-    const index = this._items.items.findIndex(item => item.name === itemName);
-    if (index !== -1) {
-      const removedItem = this._items.items.splice(index, 1)[0];
-      // console.log(`${removedItem.getName()} removed from inventory.`);
-    } else {
-      throw Error(`Item '${itemName}' not found in inventory.`);
-    }
-  }
-
   hasItem(itemName: string): boolean {
     return this._items.items.some(item => item.name === itemName);
   }

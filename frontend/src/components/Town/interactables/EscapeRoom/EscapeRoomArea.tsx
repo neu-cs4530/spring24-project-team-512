@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import PlayerController from '../../../../classes/PlayerController';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
-import { GameStatus, InteractableID, Item } from '../../../../types/CoveyTownSocket';
+import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
 import GameAreaInteractable from '../GameArea';
 import EscapeRoomAreaController from '../../../../classes/interactable/EscapeRoomAreaController';
 import { Box } from '@material-ui/core';
@@ -60,38 +60,10 @@ export default function EscapeRoomArea({
 
   const [p1, setPlayer1] = useState<PlayerController | undefined>(gameAreaController.player1);
   const [p2, setPlayer2] = useState<PlayerController | undefined>(gameAreaController.player2);
-  const [inventoryP1, setInventoryP1] = useState<Item[] | undefined>(p1?.inventory.items);
-  const [inventoryP2, setInventoryP2] = useState<Item[] | undefined>(p2?.inventory.items);
 
   const toast = useToast();
 
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
-
-  // const ourPlayer = townController.ourPlayer;
-
-  // const [escapeRoom, setEscapeRoom] = useState<boolean>(ourPlayer.escapeRoom);
-
-  // useEffect(() => {
-  //   const updateEscapeRoom = () => {
-  //     setEscapeRoom(ourPlayer.escapeRoom);
-  //   };
-  //   gameAreaController.addListener('escapeStatus', updateEscapeRoom);
-
-  //   return () => {
-  //     gameAreaController.removeListener('escapeStatus', updateEscapeRoom);
-  //   };
-  // }, [ourPlayer, gameAreaController]);
-  // const isPlayer1Ready = () => {
-  //   const gameState = gameAreaController.toInteractableAreaModel().game?.state;
-  //   return gameState?.player1Ready;
-  // };
-
-  // const isPlayer2Ready = () => {
-  //   const gameState = gameAreaController.toInteractableAreaModel().game?.state;
-  //   return gameState?.player2Ready;
-  // };
-
-  // const areBothPlayerReady = () => isPlayer1Ready() && isPlayer2Ready();
 
   useEffect(() => {
     const updateGameState = () => {
@@ -100,8 +72,6 @@ export default function EscapeRoomArea({
       setTime(gameAreaController.time || 0);
       setPlayer1(gameAreaController.player1);
       setPlayer2(gameAreaController.player2);
-      setInventoryP1(p1?.inventory.items);
-      setInventoryP2(p2?.inventory.items);
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     // const onGameEnd = () => {
@@ -207,26 +177,28 @@ export default function EscapeRoomArea({
         Play Single Player
       </Button>
     );
-    const joinGameButton = (
+    const twoGameButton = (
       <Button
+        colorScheme='blue'
         onClick={async () => {
           setJoiningGame(true);
           try {
-            await gameAreaController.joinGame();
-            if (p1) p1.escapeRoom = true;
-            if (p1 && p1.escapeRoom && p2) p2.escapeRoom = true;
+            if (gameAreaController.player1) {
+              gameAreaController.player1.twoPlayer = true;
+            }
+            if (gameAreaController.player2) {
+              gameAreaController.player2.twoPlayer = true;
+            }
+            gameArea?.movePlayer(2065, 1800);
+            await gameAreaController.singleGame();
           } catch (err) {
-            toast({
-              title: 'Error joining game',
-              description: (err as Error).toString(),
-              status: 'error',
-            });
+            setJoiningGame(true);
           }
           setJoiningGame(false);
         }}
         isLoading={joiningGame}
         disabled={joiningGame}>
-        Join New Game
+        Play Two Player
       </Button>
     );
     gameStatusText = (
@@ -234,10 +206,8 @@ export default function EscapeRoomArea({
         <Box pt={1} border='1px' borderColor={'#ccc'} borderRadius='5px' color={'#666'}>
           Play single player game, or wait for another player
         </Box>
-        <Box>
-          {singleGameButton}
-          {/* {joinGameButton} */}
-        </Box>
+        <Box>{singleGameButton}</Box>
+        <Box>{twoGameButton}</Box>
       </Flex>
     );
   } else {
