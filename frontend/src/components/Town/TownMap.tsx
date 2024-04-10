@@ -17,6 +17,8 @@ import InventoryDisplay from '../SocialSidebar/Inventory';
 import { useActiveInteractableAreas, useInteractable } from '../../classes/TownController';
 import GameAreaInteractable from './interactables/GameArea';
 import { Inventory } from '../../types/CoveyTownSocket';
+import EscapeLeaderboardComponent from './interactables/EscapeLeaderboardComponent';
+import NewEscapeLBModal from './interactables/NewEscapeLBModal';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     chatWindowContainer: {
@@ -136,6 +138,7 @@ export default function TownMap(): JSX.Element {
       <NewConversationModal />
       <NewKeyBoxModal />
       <NewHintModal />
+      <NewEscapeLBModal />
       <GameAreaWrapper />
       <aside className={clsx(classes.chatWindowContainer, { [classes.hide]: !isChatWindowOpen })}>
         <ChatWindow />

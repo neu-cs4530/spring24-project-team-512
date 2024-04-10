@@ -304,11 +304,7 @@ export default function EscapeRoomArea({
 
   return (
     <Container>
-      <VStack
-        align='left'
-        spacing={6}
-        padding={2}
-      >
+      <VStack align='left' spacing={6} padding={2}>
         <Heading fontSize='xl' as='h2'>
           {gameStatusText}
         </Heading>

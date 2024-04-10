@@ -13,6 +13,7 @@ import ViewingArea from './interactables/ViewingArea';
 import PopUp from './interactables/PopUp';
 import KeyBox from './interactables/KeyBox';
 import HintArea from './interactables/HintArea';
+import EscapeLeaderboard from './interactables/EscapeLeaderboard';
 
 // Still not sure what the right type is here... "Interactable" doesn't do it
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +32,8 @@ function interactableTypeForObjectType(type: string): any {
     return KeyBox;
   } else if (type === 'HintArea') {
     return HintArea;
+  } else if (type === 'EscapeLeaderboard') {
+    return EscapeLeaderboard;
   } else {
     throw new Error(`Unknown object type: ${type}`);
   }

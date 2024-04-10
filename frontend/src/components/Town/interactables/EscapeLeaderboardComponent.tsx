@@ -1,6 +1,7 @@
 import { Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react';
 import React from 'react';
-import { GameResult } from '../../../types/CoveyTownSocket';
+import { getAllRows } from '../EscapeRoomDB';
+import { useEffect, useState } from 'react';
 
 /**
  * A component that renders a list of GameResult's as a leaderboard, formatted as a table with the following columns:
@@ -15,18 +16,23 @@ import { GameResult } from '../../../types/CoveyTownSocket';
  *
  * @returns
  */
-export default function EscapeLeaderboard({ results }: { results: GameResult[] }): JSX.Element {
-  const timeByPlayer: Record<string, { player: string; time: number }> = {};
-  results.forEach(result => {
-    const players = Object.keys(result.scores);
-    const p1 = players[0];
-    timeByPlayer[p1] = {
-      player: p1,
-      time: result.time ? result.time : 0,
-    };
-  });
-  const rows = Object.keys(timeByPlayer).map(player => timeByPlayer[player]);
-  rows.sort((a, b) => a.time - b.time);
+export default function EscapeLeaderboardComponent(): JSX.Element {
+  const [rows, setRows] = useState<
+    { completion_time: number | null; covey_name: string | null; created_at: string; id: number }[]
+  >([]);
+  useEffect(() => {
+    async function getData() {
+      const data = await getAllRows();
+      if (data) {
+        console.log('got data');
+        console.log(data.length);
+        if (data.length > 0) {
+          setRows(data);
+        }
+      }
+    }
+    getData();
+  }, []);
   return (
     <Table>
       <Thead>
@@ -38,9 +44,9 @@ export default function EscapeLeaderboard({ results }: { results: GameResult[] }
       <Tbody>
         {rows.map(record => {
           return (
-            <Tr key={record.player}>
-              <Td>{record.player}</Td>
-              <Td>{record.time}</Td>
+            <Tr key={record.covey_name}>
+              <Td>{record.covey_name}</Td>
+              <Td>{record.completion_time}</Td>
             </Tr>
           );
         })}

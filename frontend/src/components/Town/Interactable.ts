@@ -9,7 +9,8 @@ export type KnownInteractableTypes =
   | 'gameArea'
   | 'popUp'
   | 'keyBox'
-  | 'hintArea';
+  | 'hintArea'
+  | 'escapeLeaderboard';
 
 /**
  * A base abstract class for representing an "interactable" in the Phaser game world.
