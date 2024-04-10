@@ -12,7 +12,11 @@ assert(SUPABASE_ANON_KEY, 'supabase anon key must be defined');
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export async function getAllRows() {
-  const { data } = await supabase.from('escape room leaderboard').select('*').limit(10);
+  const { data } = await supabase
+    .from('escape room leaderboard')
+    .select('*')
+    .order('completion_time')
+    .limit(10);
 
   return data;
 }
