@@ -325,7 +325,7 @@ export default class TownGameScene extends Phaser.Scene {
         this._timer?.destroy();
         this._timerText?.destroy();
 
-        if (this.coveyTownController.ourPlayer.inventory.items.find(item => item.name === 'basement key')) {
+        if (this.coveyTownController.ourPlayer.inventory.items.find(item => item.name === 'Basement Key')) {
           this.coveyTownController.ourPlayer.completed = true;
           addTime(this.coveyTownController.ourPlayer.userName, this._realTime);
         }
@@ -364,17 +364,17 @@ export default class TownGameScene extends Phaser.Scene {
       if (
         (this.inRoom1() &&
           this.coveyTownController.ourPlayer.inventory.items.find(
-            item => item.name === 'room 2 key',
+            item => item.name === 'Room 2 Key',
           ) === undefined &&
           override === undefined) ||
         (this.inRoom2() &&
           this.coveyTownController.ourPlayer.inventory.items.find(
-            item => item.name === 'room 3 key',
+            item => item.name === 'Room 3 Key',
           ) === undefined &&
           override === undefined) ||
         (this.inRoom3() &&
           this.coveyTownController.ourPlayer.inventory.items.find(
-            item => item.name === 'basement key',
+            item => item.name === 'Basement Key',
           ) === undefined &&
           override === undefined)
       ) {
@@ -453,8 +453,8 @@ export default class TownGameScene extends Phaser.Scene {
       ) {
         // If our player touches the shovel, push it to their inventory and remove the sprite
         this.coveyTownController.ourPlayer.placeItem({
-          name: 'shovel',
-          description: 'shovel',
+          name: 'Shovel',
+          description: 'Shovel',
           tile: '',
         });
         this._shovelSprite.setVisible(false);
@@ -540,8 +540,8 @@ export default class TownGameScene extends Phaser.Scene {
             ) {
        
               this.coveyTownController.ourPlayer.placeItem({
-                name: 'room 3 key',
-                description: 'room 3 key',
+                name: 'Room 3 Key',
+                description: 'Room 3 Key',
                 tile: '',
               });
 
@@ -583,15 +583,15 @@ export default class TownGameScene extends Phaser.Scene {
               if (
                 this._fDown?.isDown &&
                 this.coveyTownController.ourPlayer.inventory.items.find(
-                  item => item.name === 'shovel',
+                  item => item.name === 'Shovel',
                 ) !== undefined
               ) {
                 const gameAreaController = this.coveyTownController.gameAreas.find(
                   eachArea => eachArea.id == 'Escape Room 1',
                 );
                 this.coveyTownController.ourPlayer.placeItem({
-                  name: 'basement key',
-                  description: 'basement key',
+                  name: 'Basement Key',
+                  description: 'Basement Key',
                   tile: '',
                 });
 
@@ -669,7 +669,7 @@ export default class TownGameScene extends Phaser.Scene {
               this.scale.height + 1000,
             );
             if (
-              player.inventory.items.find(item => item.name === 'shrinker') !== undefined &&
+              player.inventory.items.find(item => item.name === 'Shrinker') !== undefined &&
               this._mDown?.isDown
             ) {
               this.coveyTownController.ourPlayer.gameObjects?.sprite.setDisplaySize(10, 10);

@@ -95,19 +95,23 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
         </Box>
       </Flex>
       <Accordion allowToggle border='1px' borderColor={'#ccc'} borderRadius='5px'>
-        <AccordionItem border={'none'}>
-          <Heading as='h3'>
-            <AccordionButton>
-              <Box flex='1' textAlign='left'>
-                Leaderboard
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel>
-              <Leaderboard results={history} />
-            </AccordionPanel>
-          </Heading>
-        </AccordionItem>
+        {gameAreaController.toInteractableAreaModel().type === 'EscapeRoomArea' ? (
+          <></>
+        ) : (
+          <AccordionItem border={'none'}>
+            <Heading as='h3'>
+              <AccordionButton>
+                <Box flex='1' textAlign='left'>
+                  Leaderboard
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel>
+                <Leaderboard results={history} />
+              </AccordionPanel>
+            </Heading>
+          </AccordionItem>
+        )}
         <AccordionItem>
           <Heading as='h3'>
             <AccordionButton>

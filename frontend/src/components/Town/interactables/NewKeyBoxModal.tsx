@@ -47,13 +47,13 @@ export default function NewKeyBoxModal(): JSX.Element {
     if (keyBoxDisplay) {
       if (topic === '240') {
         coveyTownController.ourPlayer.placeItem({
-          name: 'room 2 key',
-          description: 'room 2 key',
+          name: 'Room 2 Key',
+          description: 'Room 2 Key',
           tile: '',
         });
         coveyTownController.ourPlayer.placeItem({
-          name: 'shrinker',
-          description: 'shrinker (press m to use)',
+          name: 'Shrinker',
+          description: 'Shrinker (Press m to use)',
           tile: '',
         });
         // gameArea?.placeTile(1940, 1440);

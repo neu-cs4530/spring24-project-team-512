@@ -35,12 +35,12 @@ export default class PopUpArea extends Interactable {
         'In halls of history, where relics sleep, \n Beneath glass cases, secrets keep. \n Legs of creatures, ancient and grand,  \n In fossils and bones, they silently stand. \n\n Press spacebar for a hint!';
     }
     if (this.name === 'Room3Key') {
-      message = 'You found the room 3 key!';
+      message = 'You found the Room 3 Key!';
     }
     if (this.name.includes('Grave')){
       // Check if the player has the shovel
 
-      if (inven.items.find(item => (item.name === 'shovel')) !== undefined) {
+      if (inven.items.find(item => (item.name === 'Shovel')) !== undefined) {
         message = 'Press F to dig.';
       }
     }

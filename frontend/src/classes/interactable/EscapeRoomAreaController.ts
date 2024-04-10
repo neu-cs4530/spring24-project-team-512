@@ -62,12 +62,12 @@ export default class EscapeRoomAreaController extends GameAreaController<
 
   get completed(): boolean | undefined {
     return (
-      (this.player1?.inventory.items.find(item => item.name === 'room 2 key') !== undefined &&
-        this.player1?.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
-        this.player1?.inventory.items.find(item => item.name === 'room 3 key') !== undefined) ||
-      (this.player2?.inventory.items.find(item => item.name === 'room 2 key') !== undefined &&
-        this.player2?.inventory.items.find(item => item.name === 'mushrooms') !== undefined &&
-        this.player2?.inventory.items.find(item => item.name === 'room 3 key') !== undefined)
+      (this.player1?.inventory.items.find(item => item.name === 'Room 2 Key') !== undefined &&
+        this.player1?.inventory.items.find(item => item.name === 'Mushrooms') !== undefined &&
+        this.player1?.inventory.items.find(item => item.name === 'Room 3 Key') !== undefined) ||
+      (this.player2?.inventory.items.find(item => item.name === 'Room 2 Key') !== undefined &&
+        this.player2?.inventory.items.find(item => item.name === 'Mushrooms') !== undefined &&
+        this.player2?.inventory.items.find(item => item.name === 'Room 3 Key') !== undefined)
     );
   }
 

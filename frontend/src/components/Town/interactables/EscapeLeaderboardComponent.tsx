@@ -40,18 +40,18 @@ export default function EscapeLeaderboardComponent(): JSX.Element {
     <Table>
       <Thead>
         <Tr>
-          <th>Rank</th>
-          <th>Player</th>
-          <th>Time</th>
+          <th style={{ textAlign: 'center' }}>Rank</th>
+          <th style={{ textAlign: 'center' }}>Player</th>
+          <th style={{ textAlign: 'center' }}>Time</th>
         </Tr>
       </Thead>
       <Tbody>
         {ourRows.map((record, index) => {
           return (
             <Tr key={record.covey_name}>
-              <Td>{index + 1}</Td>
-              <Td>{record.covey_name}</Td>
-              <Td>{record.completion_time?.toFixed(2) + 's'}</Td>
+              <Td style={{ textAlign: 'center' }}>{index + 1}</Td>
+              <Td style={{ textAlign: 'center' }}>{record.covey_name}</Td>
+              <Td style={{ textAlign: 'center' }}>{record.completion_time?.toFixed(2) + 's'}</Td>
             </Tr>
           );
         })}
